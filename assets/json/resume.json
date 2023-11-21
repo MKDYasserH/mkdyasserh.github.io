@@ -38,15 +38,16 @@
   "volunteer": [],
   "education": [
     {
-      "institution": "University of Zurich, Zurich, Switzerland",
-      "url": "https://www.uzh.ch/",
+      "institution": "CY Cergy Paris University, France",
+      "url": "https://theses.fr/s306470",
       "area": "Software Development",
       "studyType": "PhD",
-      "startDate": "1905-01-01",
-      "endDate": "1905-01-01",
+      "startDate": "2021-10-01",
+      "endDate": "",
       "score": "",
+      "summary": "CIFRE thesis in affective computing, in collaboration between Alteca and ETIS (Information and Processing System)",
       "courses": [
-        "Theory of Relativity"
+        "Emotional response recommendation for context-aware affective systems"
       ]
     }
   ],
