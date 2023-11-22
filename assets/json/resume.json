@@ -1,38 +1,27 @@
 {
-  "basics": {
-    "name": "Albert Einstein",
-    "label": "Scientist",
-    "image": "",
-    "email": "albert@einstein.de",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
-    "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
-    "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
-      "countryCode": "US",
-      "region": "California"
-    },
-    "profiles": [
-      {
-        "network": "Twitter",
-        "username": "AlbertEinstein",
-        "url": "https://twitter.com/AlbertEinstein"
-      }
-    ]
-  },
+  "basics": {},
   "work": [
     {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
+      "name": "Alteca",
+      "position": "PhD Candidate & R&D Project Manager",
+      "url": "https://www.alteca.fr/",
+      "startDate": "2021-10-01",
+      "endDate": "",
+      "summary": "Conducting research on unsupervised learning, recommender systems, and emotional chatbots, as well as managing affective computing projects.",
       "highlights": [
-        "Relativity"
+        "Developing new approaches to multi-modal collaborative clustering and recommender systems.",
+        "Supervising R&D projects related to affective computing: emotional response generation, multi-modal emotion recognition, speaker diarization.",
+        "Teaching Machine Learning and Data Visualization."
       ]
+    },
+    {
+      "name": "Alteca",
+      "position": "Data scientist",
+      "url": "https://www.alteca.fr/",
+      "startDate": "2020-06-01",
+      "endDate": "2020-11-30",
+      "summary": "Implementation of a Speech-To-Text solution that aims to translate a person's words on the fly, adding a model to detect the speaker's gender and emotion.",
+      "highlights": ""
     }
   ],
   "volunteer": [],
@@ -49,29 +38,35 @@
       "courses": [
         "Emotional response recommendation for context-aware affective systems"
       ]
-    }
-  ],
-  "awards": [
+    },
     {
-      "title": "Nobel Prize in Physics",
-      "date": "1921-11-01",
-      "awarder": "Royal Swedish Academy of Sciences",
-      "summary": "The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'"
+      "institution": "Sorbonne Paris Nord University, France",
+      "url": "https://galilee.univ-paris13.fr/master/master-informatique/",
+      "area": "Software Development",
+      "studyType": "Master Degree",
+      "startDate": "2019-10-01",
+      "endDate": "2020-12-31",
+      "score": "",
+      "summary": "Major in Data Exploration, Data Mining and Business Intelligence",
+      "courses": ""
+    },
+    {
+      "institution": "National Institute of Statistics and Applied Economics, Morocco",
+      "url": "https://insea.ac.ma/",
+      "area": "Software Development",
+      "studyType": "Engineer Degree",
+      "startDate": "2016-09-01",
+      "endDate": "2019-07-31",
+      "score": "",
+      "summary": "Major in Business Intelligence and Data Engineering",
+      "courses": ""
     }
   ],
+  "awards": [],
   "certificates": [],
   "publications": [],
   "skills": [],
-  "languages": [
-    {
-      "language": "German",
-      "fluency": "Native speaker"
-    },
-    {
-      "language": "English",
-      "fluency": "Fluent"
-    }
-  ],
+  "languages": [],
   "interests": [],
   "references": [],
   "projects": []
