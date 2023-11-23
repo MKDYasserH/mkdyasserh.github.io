@@ -1,81 +1,48 @@
 ---
 layout: page
-title: project 2
-description: a project with a background image and giscus comments
-img: assets/img/3.jpg
+title: Multi-modal Emotion Recognition
+description: Recognition of human emotions through multiple modalities
+img: assets/img/emotion_recognition.jpg
 importance: 2
 category: work
-giscus_comments: true
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+<h2>Overview</h2>
+In this project, we are developing a multi-modal emotion recognition system that goes beyond traditional methods by incorporating multiple sources of input, such as facial expressions, voice tonality, and text analysis. The goal is to create a comprehensive and accurate model for understanding and interpreting human emotions in various contexts.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
-
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/em_rec_alteca.jpg" title="Emotion Recognition interface" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    Multi-modal emotion recognition UI
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, *bled* for your project, and then... you reveal its glory in the next row of images.
+<h2>Features</h2>
+
+- **Facial Expression Analysis:**
+  - Detect and analyze facial expressions using computer vision techniques.
+  - Recognize key facial landmarks and expressions associated with different emotions.
+
+- **Audio Features Analysis:**
+  - Utilize audio processing to capture and analyze the tonal variations in speech.
+  - Identify patterns in pitch, intensity, and tempo to infer emotional states.
+
+- **Textual Data Analysis:**
+  - Process extracted text to infer emotional cues.
+
+- **Multi-Modal Fusion:**
+  - Integrate information from facial expressions, audio features, and text to create a holistic understanding of the user's emotional state.
+  - Develop fusion strategies to combine modalities effectively for improved accuracy.
+
+- **Real-Time Emotion Recognition:**
+  - Implement algorithms that allow for real-time analysis of emotions as they unfold.
+  - Enable the system to provide instantaneous feedback based on the recognized emotions.
+
+- **Emotion Trend Analysis:**
+  - Provide insights into the temporal patterns of emotions, allowing for trend analysis over time.
+  - Identify recurring emotional states and potential triggers.
 
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
-</div>
-
-
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
-
-{% raw %}
-```html
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-```
-{% endraw %}

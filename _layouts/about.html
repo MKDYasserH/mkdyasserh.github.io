@@ -1,111 +1,166 @@
 ---
 layout: default
+display_categories: [work]
+horizontal: true
 ---
 
 <!-- about.html -->
-      <div class="post">
-        <header class="post-header">
-          <h1 class="post-title">
-            {% if site.title == "blank" -%}<span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}{%- endif %}
-          </h1>
-          <p class="desc">{{ page.subtitle }}</p>
-        </header>
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      {% if site.title == "blank" -%}<span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
+      {{ site.last_name }}{%- else -%}{{ site.title }}{%- endif %}
+    </h1>
+    <p class="desc">{{ page.subtitle }}</p>
+  </header>
 
-        <article>
-          {% if page.profile -%}
-          <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
-            {%- if page.profile.image %}
-              {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
+  <article>
+    {% if page.profile -%}
+    <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
+      {%- if page.profile.image %}
+      {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
 
-              {% if page.profile.image_circular %}
-                {%- assign profile_image_class = "img-fluid z-depth-1 rounded-circle" -%}
-              {% else %}
-                {%- assign profile_image_class = "img-fluid z-depth-1 rounded" -%}
-              {% endif %}
+      {% if page.profile.image_circular %}
+      {%- assign profile_image_class = "img-fluid z-depth-1 rounded-circle" -%}
+      {% else %}
+      {%- assign profile_image_class = "img-fluid z-depth-1 rounded" -%}
+      {% endif %}
 
-              {% include figure.html
-              path=profile_image_path
-              class=profile_image_class
-              alt=page.profile.image
-              cache_bust=true -%}
-            {% endif -%}
-            {%- if page.profile.more_info %}
-            <div class="more-info">
-              {{ page.profile.more_info }}
-            </div>
-            {%- endif %}
+      {% include figure.html
+      path=profile_image_path
+      class=profile_image_class
+      alt=page.profile.image
+      cache_bust=true -%}
+      {% endif -%}
+      {%- if page.profile.more_info %}
+      <div class="more-info">
+        {{ page.profile.more_info }}
+      </div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+
+    <div class="clearfix">
+      {{ content }}
+    </div>
+
+    <!-- News -->
+    {% if page.news and site.announcements.enabled -%}
+    <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
+    {%- include news.html limit=true %}
+    {%- endif %}
+
+    <!-- CV -->
+    <br><br>
+    <h2><a href="#" style="color: inherit;">Career and Academic Journey</a></h2>
+    <article>
+      <div class="cv">
+        {% for data in site.data.resume %}
+        {% if site.jsonresume and site.jsonresume.size > 0 %}
+        {% unless site.jsonresume contains data[0] %}
+        {% continue %}
+        {% endunless %}
+        {% endif %}
+        {% if data[0] == "meta" or data[1].size == 0 %}
+        {% continue %}
+        {% endif %}
+        <a class="anchor" id="{{ data[0] }}"></a>
+        <div class="card mt-3 p-3">
+          <h3 class="card-title font-weight-medium">{{ data[0] | capitalize }}</h3>
+          <div>
+            {% case data[0] %}
+            {% when "education" %}
+            {% include resume/education.html %}
+            {% when "work" %}
+            {% include resume/work.html %}
+            {% when "certificates" %}
+            {% include resume/certificates.html %}
+            {% else %}
+
+            {% endcase %}
           </div>
-          {%- endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </article>
+    
+    <br><br>
+    <h2><a href="#" style="color: inherit;">Selected Projects</a></h2>
+    <!-- Selected projects-->
+    <!-- pages/projects.md -->
+    <div class="projects">
+      {%- if site.enable_project_categories and page.display_categories %}
+      <!-- Display categorized projects -->
+      {%- for category in page.display_categories %}
+      <h2 class="category">{{ category }}</h2>
+      {%- assign categorized_projects = site.projects | where: "category", category -%}
+      {%- assign sorted_projects = categorized_projects | sort: "importance" %}
+      <!-- Generate cards for each project -->
+      {% if page.horizontal -%}
+      <div class="container">
+        <div class="row row-cols-1">
+          {%- for project in sorted_projects -%}
+          {% include projects_horizontal.html %}
+          {%- endfor %}
+        </div>
+      </div>
+      {%- else -%}
+      <div class="grid">
+        {%- for project in sorted_projects -%}
+        {% include projects.html %}
+        {%- endfor %}
+      </div>
+      {%- endif -%}
+      {% endfor %}
 
-          <div class="clearfix">
-            {{ content }}
-          </div>
+      {%- else -%}
+      <!-- Display projects without categories -->
+      {%- assign sorted_projects = site.projects | sort: "importance" -%}
+      <!-- Generate cards for each project -->
+      {% if page.horizontal -%}
+      <div class="container">
+        <div class="row row-cols-2">
+          {%- for project in sorted_projects -%}
+          {% include projects_horizontal.html %}
+          {%- endfor %}
+        </div>
+      </div>
+      {%- else -%}
+      <div class="grid">
+        {%- for project in sorted_projects -%}
+        {% include projects.html %}
+        {%- endfor %}
+      </div>
+      {%- endif -%}
+      {%- endif -%}
+    </div>
 
-          <!-- News -->
-          {% if page.news and site.announcements.enabled -%}
-            <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">news</a></h2>
-            {%- include news.html limit=true %}
-          {%- endif %}
+    <!-- Latest posts -->
+    {% if page.latest_posts -%}
+    <h2><a href="{{ '/blog/' | relative_url }}" style="color: inherit;">latest posts</a></h2>
+    {%- include latest_posts.html %}
+    {%- endif %}
 
-          <!-- CV -->
-          <br><br>
-          <h2><a href="#" style="color: inherit;">Career and Academic Journey</a></h2>
-          <article>
-            <div class="cv">
-              {% for data in site.data.resume %}
-                {% if site.jsonresume and site.jsonresume.size > 0 %}
-                  {% unless site.jsonresume contains data[0] %}
-                    {% continue %}
-                  {% endunless %}
-                {% endif %}
-                {% if data[0] == "meta" or data[1].size == 0 %}
-                  {% continue %}
-                {% endif %}
-                <a class="anchor" id="{{ data[0] }}"></a>
-                <div class="card mt-3 p-3">
-                  <h3 class="card-title font-weight-medium">{{ data[0] | capitalize }}</h3>
-                  <div>
-                  {% case data[0] %}
-                    {% when "education" %}
-                      {% include resume/education.html %}
-                    {% when "work" %}
-                      {% include resume/work.html %}
-                    {% when "certificates" %}
-                      {% include resume/certificates.html %}
-                    {% else %}
-        
-                  {% endcase %}
-                  </div>
-                </div>
-              {% endfor %}
-              </div>
-          </article>
+    <!-- Selected papers -->
+    <br><br>
+    {% if page.selected_papers -%}
+    <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">selected publications</a></h2>
+    {%- include selected_papers.html %}
+    {%- endif %}
 
-          <!-- Latest posts -->
-          {% if page.latest_posts -%}
-            <h2><a href="{{ '/blog/' | relative_url }}" style="color: inherit;">latest posts</a></h2>
-            {%- include latest_posts.html %}
-          {%- endif %}
+    <!-- Social -->
+    {%- if page.social %}
+    <div class="social">
+      <div class="contact-icons">
+        {% include social.html %}
+      </div>
 
-          <!-- Selected papers -->
-          {% if page.selected_papers -%}
-            <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">selected publications</a></h2>
-            {%- include selected_papers.html %}
-          {%- endif %}
+      <div class="contact-note">
+        {{ site.contact_note }}
+      </div>
 
-          <!-- Social -->
-          {%- if page.social %}
-            <div class="social">
-              <div class="contact-icons">
-                {% include social.html %}
-              </div>
-
-              <div class="contact-note">
-                {{ site.contact_note }}
-              </div>
-
-            </div>
-          {%- endif %}
-        </article>
+    </div>
+    {%- endif %}
+  </article>
 
 </div>
