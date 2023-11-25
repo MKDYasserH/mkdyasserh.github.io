@@ -79,17 +79,16 @@
       items: 
         - Max Planck Medal
 
-- title: Academic Interests
+- title: Others
   type: nested_list
   contents:
-    - title: Topic 1.
+    - title: Teaching
       items: 
-        - Description 1.
-        - Description 2.
-    - title: Topic 2.
-      items:
-        - Description 1.
-        - Description 2.
+        - Instructor of the Data Preprocessing and Visualization class.  
+        - Instructor of Systems Architecture & C programming classes.
+    - title: Entrepreneurship
+      items: 
+    
 
 - title: Other Interests
   type: list

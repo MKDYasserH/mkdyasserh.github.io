@@ -73,6 +73,8 @@ horizontal: true
             {% include resume/education.html %}
             {% when "work" %}
             {% include resume/work.html %}
+            {% when "others" %}
+            {% include resume/others.html %}
             {% when "certificates" %}
             {% include resume/certificates.html %}
             {% else %}
@@ -83,7 +85,7 @@ horizontal: true
         {% endfor %}
       </div>
     </article>
-    
+
     <br><br>
     <h2><a href="#" style="color: inherit;">Selected Projects</a></h2>
     <!-- Selected projects-->
@@ -146,20 +148,6 @@ horizontal: true
     {% if page.selected_papers -%}
     <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">selected publications</a></h2>
     {%- include selected_papers.html %}
-    {%- endif %}
-
-    <!-- Social -->
-    {%- if page.social %}
-    <div class="social">
-      <div class="contact-icons">
-        {% include social.html %}
-      </div>
-
-      <div class="contact-note">
-        {{ site.contact_note }}
-      </div>
-
-    </div>
     {%- endif %}
   </article>
 

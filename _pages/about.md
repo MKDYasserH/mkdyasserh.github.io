@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD Candidate, AI Researcher, Project Manager, Educator
+subtitle: PhD Candidate, AI Researcher, Project Manager, Instructor
 
 profile:
   align: right

@@ -67,7 +67,15 @@
   "publications": [],
   "skills": [],
   "languages": [],
-  "interests": [],
+  "others": [
+    {
+      "name": "Teaching",
+      "icon": "fa-solid fa-book",
+      "keywords": [
+        "Data Preprocessing and Visualization class.",
+        "Systems Architecture & C programming classes."
+      ]}
+  ],
   "references": [],
   "projects": []
 }
