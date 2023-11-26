@@ -49,7 +49,7 @@
 
           <!-- About -->
           <li class="nav-item {% if page.permalink == '/' %}active{% endif %}">
-            <a class="nav-link" href="{{ '/' | relative_url }}">{{ about_title }}
+            <a class="nav-link text-uppercase" href="{{ '/' | relative_url }}">{{ about_title }}
               {%- if page.permalink == '/' -%}
               <span class="sr-only">(current)</span>
               {%- endif -%}
@@ -59,7 +59,7 @@
           {% if site.blog_nav_title %}
           <!-- Blog -->
           <li class="nav-item {% if page.url contains 'blog' %}active{% endif %}">
-            <a class="nav-link" href="{{ '/blog/' | relative_url }}">{{ site.blog_nav_title }}
+            <a class="nav-link text-uppercase" href="{{ '/blog/' | relative_url }}">{{ site.blog_nav_title }}
               {%- if page.url contains 'blog' -%}
               <span class="sr-only">(current)</span>
               {%- endif -%}
@@ -69,7 +69,7 @@
 
           <!-- Contact -->
           <li class="nav-item {% if page.url contains 'contact' %}active{% endif %}">
-            <a class="nav-link" href="{{ '/contact/' | relative_url }}">{{ contact_title }}
+            <a class="nav-link text-uppercase" href="{{ '/contact/' | relative_url }}">{{ contact_title }}
               {%- if page.permalink == '/contact/' -%}
               <span class="sr-only">(current)</span>
               {%- endif -%}

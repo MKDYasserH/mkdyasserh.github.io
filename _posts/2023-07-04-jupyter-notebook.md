@@ -1,10 +1,10 @@
 ---
 layout: post
-title: a post with jupyter notebook
-date: 2023-07-04 08:57:00-0400
-description: an example of a blog post with jupyter notebook
-tags: formatting jupyter
-categories: sample-posts
+title: Coming Soon
+#date: #2023-12-31 08:57:00-0400
+description: Implementation of a State-of-the-Art AI Scientific paper
+tags: 
+categories: Research-Papers, Implementation
 giscus_comments: true
 related_posts: false
 ---
