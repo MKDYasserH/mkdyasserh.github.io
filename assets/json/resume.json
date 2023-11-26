@@ -22,7 +22,7 @@
       "endDate": "2021-09-30",
       "summary": "A open-source research project related to the incorporation of timbral descriptors to enhance the authenticity and richness of the generated audio.",
       "highlights": [
-        "led and supervised the dataset team, fostering collaboration and ensuring the team's alignment with project goals.",
+        "Led and supervised the dataset team, fostering collaboration and ensuring the team's alignment with project goals.",
         "Designed and implemented efficient data preprocessing pipelines, streamlining the workflow for the neural network models.",
         "Implemented rigorous standards for dataset quality, guaranteeing that the data used in the project was representative, diverse, and well-curated for effective neural audio synthesis.",
         "Paper presented and published at the AIMC 2022 conference."
