@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Coming Soon
-#date: #2023-12-31 08:57:00-0400
-description: Implementation of a State-of-the-Art AI Scientific paper
-tags: 
-categories: Research-Papers, Implementation
+title: Stable Diffusion Series - Introduction and Prerequisites
+date: 2025-01-11 #08:57:00-0400
+description: Getting our feet wet before diving into the amazing Stable Diffusion model
+tags: [Prerequisites, Stable Diffusion, Introduction]
+categories: Implementation
 giscus_comments: true
 related_posts: false
 ---

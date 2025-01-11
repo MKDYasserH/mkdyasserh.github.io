@@ -3,10 +3,10 @@
   "work": [
     {
       "name": "Alteca",
-      "position": "PhD Candidate & R&D Project Manager",
+      "position": "PhD Candidate",
       "url": "https://www.alteca.fr/",
       "startDate": "2021-10-01",
-      "endDate": "",
+      "endDate": "2024-12-31",
       "summary": "Conducting research on unsupervised learning, recommender systems, and emotional chatbots, as well as managing affective computing projects.",
       "highlights": [
         "Developing new approaches to multi-modal collaborative clustering and recommender systems.",
@@ -42,15 +42,15 @@
   "education": [
     {
       "institution": "CY Cergy Paris University, France",
-      "url": "https://theses.fr/s306470",
+      "url": "https://theses.fr/2024CYUN1312",
       "area": "Software Development",
       "studyType": "PhD",
       "startDate": "2021-10-01",
-      "endDate": "",
+      "endDate": "2024-12-31",
       "score": "",
       "summary": "CIFRE thesis in affective computing, in collaboration between Alteca and ETIS (Information and Processing System)",
       "courses": [
-        "Emotional response recommendation for context-aware affective systems"
+        "Advancements in Multimodal and Unsupervised Learning with Application to Recommender Systems"
       ]
     },
     {
