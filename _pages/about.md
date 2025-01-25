@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD Candidate, AI Researcher, Project Manager, Instructor
+subtitle: PhD, Generative AI Researcher
 
 profile:
   align: right
@@ -16,8 +16,8 @@ cv: true # includes my curriculum vitae
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
-Greetings! I'm Yasser KHALAFAOUI, a dedicated Generative AI Researcher. My research focuses on unsupervised learning, recommender systems, multimodal emotion recognition and emotional response generation. As a project manager at <a href="https://www.alteca.fr">Alteca</a>, I lead teams at the forefront of affective computing innovation.
+Greetings! I'm Yasser KHALAFAOUI, a dedicated Generative AI Researcher. My work focuses on LLM safety, recommender systems and multimodal emotion recognition.
 
-Beyond academia, I'm a computer science educator at <a href="https://www.cyu.fr/">CYU</a>. In parallel, I'm driven by a passion for using AI to assist disabled individuals. My personal projects aim to make AI a transformative force in their daily lives, creating inclusive and accessible solutions.
+In parallel, I'm driven by a passion for using AI to assist disabled individuals. My personal projects aim to make AI a transformative force in their daily lives, creating inclusive and accessible solutions.
 
-Explore this space to discover the latest in affective computing, my educational initiatives, and impactful AI projects. Join me on this journey where research, education, and societal impact converge.
+Explore this space to discover the latest in AI, my educational initiatives, and impactful projects. Join me on this journey where research, and societal impact converge.

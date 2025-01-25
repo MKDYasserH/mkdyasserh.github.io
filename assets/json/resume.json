@@ -2,6 +2,18 @@
   "basics": {},
   "work": [
     {
+      "name": "Kompanion",
+      "position": "Generative AI Researcher",
+      "url": "https://www.kompanioncare.com/",
+      "startDate": "2025-01-06",
+      "endDate": "Pres.",
+      "summary": "Lead generative AI research to achieve Kompanion's product and technology vision, optimizing digital therapeutics for brain health.",
+      "highlights": [
+        "Improving robustness of LLMs to adversarial attacks.",
+        "Designing and implementing digital therapeutic AI features backed by Neuroscience."
+      ]
+    },
+    {
       "name": "Alteca",
       "position": "PhD Candidate",
       "url": "https://www.alteca.fr/",
