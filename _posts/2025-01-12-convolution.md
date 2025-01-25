@@ -72,7 +72,7 @@ It was in 1998, that LeCun et al. introduced the famous LeNet-5 architecture <d-
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/rf.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/RF.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
