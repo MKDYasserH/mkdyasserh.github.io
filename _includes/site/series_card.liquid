@@ -1,0 +1,37 @@
+{%- comment -%} One card per series on the blog index. include.series: a document from site.series {%- endcomment -%}
+{% assign s = include.series %}
+{% assign _parts = site.posts | where: 'series', s.slug | sort: 'part' %}
+{% assign _total = 0 %}
+{% assign _tags = '' | split: '' %}
+{% for p in _parts %}
+  {% capture _m %}{% include site/read_time.liquid post=p %}{% endcapture %}
+  {% assign _total = _total | plus: _m %}
+  {% assign _tags = _tags | concat: p.tags %}
+{% endfor %}
+{% assign _tags = _tags | uniq %}
+{% assign _first = _parts | first %}
+<article class="series-card" data-filter-item data-kind="series" data-tags="{{ _tags | join: '|' | downcase }}">
+  {% if s.cover %}
+    <a class="series-card__cover" href="{{ s.url | relative_url }}" tabindex="-1" aria-hidden="true">
+      <img src="{{ s.cover | relative_url }}" alt="" loading="lazy">
+    </a>
+  {% endif %}
+  <div>
+    <div class="series-card__meta">
+      <span class="site-num">S{{ include.index | prepend: '0' | slice: -2, 2 }}</span>
+      <span>{{ _parts.size }} parts</span>
+      <span>{{ _total }} min total</span>
+      {% if s.level %}<span>{{ s.level | downcase }}</span>{% endif %}
+      {% if s.status %}<span class="series-status is-{{ s.status }}">{{ s.status }}</span>{% endif %}
+    </div>
+    <h3><a href="{{ s.url | relative_url }}">{{ s.title }}</a></h3>
+    <p class="series-card__desc">{{ s.description }}</p>
+    {% include site/parts_list.liquid series=s.slug %}
+    <div class="series-card__foot">
+      {% if _first %}
+        <a class="site-link-arrow" href="{{ _first.url | relative_url }}">start with part 01 &rarr;</a>
+      {% endif %}
+      <a class="site-link-arrow" href="{{ s.url | relative_url }}">series overview &rarr;</a>
+    </div>
+  </div>
+</article>

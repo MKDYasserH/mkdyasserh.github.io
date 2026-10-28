@@ -1,0 +1,14 @@
+{%- comment -%}
+  Giscus comments, only once the repo is fully configured (see `giscus:` in _config.yml),
+  so a half-configured site never shows al-folio's "misconfigured" warning to readers.
+{%- endcomment -%}
+{% if site.plugins contains 'al_comments' and page.giscus_comments and site.giscus.repo_id and site.giscus.category_id %}
+  <section class="article-comments" id="comments">
+    <div class="site-section__head">
+      <span class="site-index">//</span>
+      <h2>Discussion</h2>
+      <p>Questions, corrections and ideas are welcome. Comments use GitHub Discussions, so you'll need a GitHub account.</p>
+    </div>
+    {% include plugins/al_comments.liquid %}
+  </section>
+{% endif %}

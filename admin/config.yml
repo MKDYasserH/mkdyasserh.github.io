@@ -1,0 +1,181 @@
+# Sveltia CMS configuration: https://github.com/sveltia/sveltia-cms
+# Open https://mkdyasserh.github.io/admin/ to write and publish without touching files.
+# Every save is a commit to `master`; the "Deploy site" workflow then rebuilds the site (about 2 minutes).
+
+backend:
+  name: github
+  repo: MKDYasserH/mkdyasserh.github.io
+  branch: master
+  commit_messages:
+    create: "blog: create {{collection}} “{{slug}}”"
+    update: "blog: update {{collection}} “{{slug}}”"
+    delete: "blog: delete {{collection}} “{{slug}}”"
+    uploadMedia: "blog: upload “{{path}}”"
+    deleteMedia: "blog: delete “{{path}}”"
+
+site_url: https://mkdyasserh.github.io
+display_url: https://mkdyasserh.github.io
+logo_url: /assets/img/favicon-32x32.png
+
+media_folder: assets/img/blog
+public_folder: /assets/img/blog
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: posts
+    label: Blog posts
+    label_singular: Post
+    description: >
+      Articles and series parts. To add a part to a series, pick the series and give it a part number.
+      Set a future date to schedule a post: it goes live on the first daily build after that date.
+    folder: _posts
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} · {{date | date('YYYY-MM-DD')}}"
+    sortable_fields: [date, title, series]
+    view_groups:
+      - label: Series
+        field: series
+    preview_path: "blog/{{year}}/{{slug}}/"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: description
+        label: Description
+        widget: text
+        hint: One or two sentences. Shown under the title and in post cards.
+      - name: date
+        label: Publish date
+        widget: datetime
+        format: "YYYY-MM-DD HH:mm:ss ZZ"
+      - name: series
+        label: Series
+        widget: relation
+        collection: series
+        value_field: "{{slug}}"
+        search_fields: [title]
+        display_fields: [title]
+        required: false
+        hint: Leave empty for a standalone article.
+      - name: part
+        label: Part number
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+        hint: Only for series posts. Parts are listed in this order.
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        hint: Lowercase topics, e.g. diffusion, llm safety. They become the filters on the blog page.
+      - name: cover
+        label: Cover image
+        widget: image
+        required: false
+      - name: giscus_comments
+        label: Allow comments
+        widget: boolean
+        default: true
+      - name: published
+        label: Published
+        widget: boolean
+        default: true
+        hint: Turn off to keep this post as a draft. Drafts are committed but not shown on the site.
+      - name: body
+        label: Body
+        widget: markdown
+        modes: [raw, rich_text]
+        editor_components: [code-block, image, table, hr]
+        hint: >
+          Math works with $$ ... $$. Code blocks take a language, e.g. ```python.
+          Stay in Markdown mode for posts with math or HTML; rich text is fine for plain prose.
+
+  - name: series
+    label: Series
+    label_singular: Series
+    description: A series groups posts into an ordered, multi-part track with its own landing page.
+    folder: _series
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} ({{status}})"
+    preview_path: "blog/series/{{slug}}/"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: tagline, label: Tagline, widget: string, required: false, hint: "One line under the title." }
+      - { name: description, label: Short description, widget: text, hint: "Shown on the series card on the blog page." }
+      - { name: cover, label: Cover image, widget: image, required: false }
+      - name: level
+        label: Level
+        widget: select
+        options: [Beginner, Intermediate, Advanced]
+        required: false
+      - name: status
+        label: Status
+        widget: select
+        options: [ongoing, complete]
+        default: ongoing
+      - { name: order, label: Order on the blog page, widget: number, value_type: int, default: 1 }
+      - { name: body, label: About this series, widget: markdown, required: false }
+
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: _projects
+    create: true
+    slug: "{{slug}}"
+    summary: "{{importance}}. {{title}}"
+    sortable_fields: [importance, title]
+    fields:
+      - { name: layout, widget: hidden, default: page }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: One-line description, widget: string }
+      - { name: img, label: Card image, widget: image, required: false }
+      - { name: importance, label: Order, widget: number, value_type: int, hint: "1 is shown first." }
+      - { name: category, label: Category, widget: string, default: work }
+      - { name: body, label: Write-up, widget: markdown }
+
+  - name: pages
+    label: Pages
+    files:
+      - name: about
+        label: About (home page)
+        file: _pages/about.md
+        fields:
+          - { name: layout, widget: hidden, default: about }
+          - { name: title, widget: hidden, default: about }
+          - { name: permalink, widget: hidden, default: / }
+          - { name: subtitle, label: Role line, widget: string }
+          - { name: headline, label: Headline, widget: string }
+          - { name: intro, label: Intro, widget: text }
+          - name: profile
+            label: Profile picture
+            widget: object
+            fields:
+              - { name: image, label: "Image file name (in assets/img)", widget: string }
+              - { name: caption, label: Caption, widget: string, required: false }
+          - name: focus
+            label: What I work on
+            widget: list
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: text, label: Text, widget: text }
+          - { name: selected_papers, label: Show selected publications, widget: boolean, default: true }
+          - { name: latest_posts, label: Show latest writing, widget: boolean, default: true }
+          - { name: social, widget: hidden, default: true }
+          - { name: body, label: Bio, widget: markdown }
+      - name: contact
+        label: Contact
+        file: _pages/contact.md
+        fields:
+          - { name: layout, widget: hidden, default: contact }
+          - { name: title, widget: hidden, default: contact }
+          - { name: permalink, widget: hidden, default: /contact/ }
+          - { name: nav, widget: hidden, default: true }
+          - { name: nav_order, widget: hidden, default: 2 }
+          - { name: description, label: SEO description, widget: string }
+          - { name: headline, label: Headline, widget: string }
+          - { name: intro, label: Intro, widget: text }

@@ -1,0 +1,100 @@
+<header>
+  <!-- Nav Bar -->
+  <nav id="navbar" class="navbar navbar-light navbar-expand-sm site-nav {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}" role="navigation">
+    <div class="container">
+      <a class="site-brand" href="{{ '/' | relative_url }}">
+        {%- if site.title == 'blank' -%}
+          {{ site.first_name }} {{ site.last_name }}
+        {%- else -%}
+          {{ site.title }}
+        {%- endif -%}
+        {%- if site.brand_tagline -%}
+          <span class="site-brand__tag">{{ site.brand_tagline }}<span class="dot">.</span></span>
+        {%- endif -%}
+      </a>
+
+      <!-- Navbar Toggle -->
+      <button
+        class="navbar-toggler collapsed navbar-toggler-main"
+        type="button"
+        data-nav-toggle="navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar top-bar"></span>
+        <span class="icon-bar middle-bar"></span>
+        <span class="icon-bar bottom-bar"></span>
+      </button>
+
+      <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav">
+        <ul class="navbar-nav navbar-menu-list flex-nowrap">
+          {% for p in site.pages %}
+            {% if p.permalink == '/' %} {% assign about_title = p.title %} {% endif %}
+          {% endfor %}
+
+          <!-- About -->
+          <li class="nav-item {% if page.permalink == '/' %}active{% endif %}">
+            <a class="nav-link" href="{{ '/' | relative_url }}">
+              {{- about_title -}}
+              {% if page.permalink == '/' %}<span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+
+          <!-- Other pages -->
+          {% assign sorted_pages = site.pages | sort: 'nav_order' %}
+          {% for p in sorted_pages %}
+            {% if p.nav and p.autogen == null %}
+              {% assign parent_link = p.permalink | remove: 'index.html' %}
+              {%- if p.permalink contains '://' -%}
+                {%- assign url = p.permalink -%}
+              {%- elsif p.permalink contains '/blog/' -%}
+                {%- assign url = '/blog/' -%}
+              {%- else -%}
+                {%- assign url = p.url -%}
+              {%- endif -%}
+              {% assign is_active = false %}
+              {% if page.url contains parent_link %}{% assign is_active = true %}{% endif %}
+              {% if parent_link == '/blog/' and page.collection == 'posts' %}{% assign is_active = true %}{% endif %}
+              {% if parent_link == '/blog/' and page.collection == 'series' %}{% assign is_active = true %}{% endif %}
+              <li class="nav-item {% if is_active %}active{% endif %}">
+                <a class="nav-link" href="{{ url | relative_url }}">
+                  {{- p.title -}}
+                  {% if is_active %}<span class="sr-only">(current)</span>{% endif %}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if site.search_enabled %}
+            <!-- Search -->
+            <li class="nav-item">
+              <button id="search-toggle" type="button" title="Search" aria-label="Open search">
+                <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span>
+              </button>
+            </li>
+          {% endif %}
+          {% if site.enable_darkmode %}
+            <!-- Toggle theme mode -->
+            <li class="toggle-container">
+              <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme">
+                <i class="fa-half-sun-moon" id="light-toggle-system"></i>
+                <i class="fa-solid fa-moon" id="light-toggle-dark"></i>
+                <i class="fa-solid fa-sun" id="light-toggle-light"></i>
+              </button>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% if site.enable_progressbar %}
+    <!-- Scrolling Progress Bar -->
+    <progress id="progress" value="0">
+      <div class="progress-container">
+        <span class="progress-bar"></span>
+      </div>
+    </progress>
+  {% endif %}
+</header>

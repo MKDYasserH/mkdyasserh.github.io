@@ -1,15 +1,27 @@
-name: deploy
+name: Deploy site
 
 on:
   push:
     branches:
       - master
       - main
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - ".github/workflows/upgrade-check.yml"
   pull_request:
     branches:
       - master
       - main
+  # Rebuild every morning so posts with a future `date` go live on their day.
+  schedule:
+    - cron: "0 6 * * *"
   workflow_dispatch:
+
+# One deploy at a time; a newer push cancels an in-flight build.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -19,31 +31,34 @@ jobs:
     # available images: https://github.com/actions/runner-images#available-images
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 🛎️
-      uses: actions/checkout@v3
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2.2'
-        bundler-cache: true
-    - name: Update _config.yml ⚙️
-      uses: fjogeleit/yaml-update-action@v0.13.1
-      with:
-        commitChange: false
-        valueFile: '_config.yml'
-        propertyPath: 'giscus.repo'
-        value: ${{ github.repository }}
-    - name: Install and Build 🔧
-      run: |
-        pip3 install --upgrade jupyter
-        npm install -g mermaid.cli
-        npm install -g purgecss
-        export JEKYLL_ENV=production
-        bundle exec jekyll build --lsi
-        purgecss -c purgecss.config.js
-    - name: Deploy 🚀
-      if: github.event_name != 'pull_request'
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: _site
-
+      - name: Checkout 🛎️
+        uses: actions/checkout@v7
+      - name: Setup Ruby 💎
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.5"
+          bundler-cache: true
+      - name: Setup Node 🧰
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+      - name: Update _config.yml ⚙️
+        uses: fjogeleit/yaml-update-action@dffe9a5223d84653c13374032382f6bb5de8e5ef # v0.17.0
+        with:
+          commitChange: false
+          valueFile: "_config.yml"
+          propertyPath: "giscus.repo"
+          value: ${{ github.repository }}
+      - name: Install and Build 🔧
+        run: |
+          export JEKYLL_ENV=production
+          bundle exec jekyll build
+      - name: Purge unused CSS 🧹
+        run: |
+          npm install -g purgecss
+          purgecss -c purgecss.config.js
+      - name: Deploy 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site

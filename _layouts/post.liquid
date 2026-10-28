@@ -1,0 +1,136 @@
+---
+layout: default
+---
+{%- comment -%}
+  Site override of al_folio_core's post layout: series-aware header, sticky
+  table of contents, prev/next within a series, and giscus comments.
+{%- endcomment -%}
+{% if page.series %}
+  {% assign series_doc = site.series | where: 'slug', page.series | first %}
+  {% assign series_parts = site.posts | where: 'series', page.series | sort: 'part' %}
+  {% for p in series_parts %}
+    {% if p.url == page.url %}
+      {% assign part_index = forloop.index0 %}
+    {% endif %}
+  {% endfor %}
+  {% assign prev_index = part_index | minus: 1 %}
+  {% assign next_index = part_index | plus: 1 %}
+  {% if prev_index >= 0 %}{% assign prev_part = series_parts[prev_index] %}{% endif %}
+  {% assign next_part = series_parts[next_index] %}
+{% endif %}
+
+{% if page._styles %}
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+{% endif %}
+
+<article class="post article">
+  <header class="article-head">
+    <nav class="article-crumbs" aria-label="Breadcrumb">
+      <a href="{{ '/blog/' | relative_url }}">blog</a>
+      {% if series_doc %}
+        <span aria-hidden="true">/</span>
+        <a href="{{ series_doc.url | relative_url }}">{{ series_doc.title | downcase }}</a>
+        <span aria-hidden="true">/</span>
+        <span>part {{ page.part | prepend: '0' | slice: -2, 2 }} of {{ series_parts.size | prepend: '0' | slice: -2, 2 }}</span>
+      {% elsif page.collection == 'news' %}
+        <span aria-hidden="true">/</span><span>news</span>
+      {% endif %}
+    </nav>
+    <h1 class="article-title">{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="article-lede">{{ page.description }}</p>
+    {% endif %}
+    <div class="article-meta">
+      <span>{{ page.date | date: '%B %-d, %Y' | downcase }}</span>
+      {% assign last_date = page.last_modified_at | default: page.last_updated %}
+      {% if last_date %}<span>updated {{ last_date | date: '%B %-d, %Y' | downcase }}</span>{% endif %}
+      <span>{% include site/read_time.liquid post=page %} min read</span>
+      {% if page.tags.size > 0 %}
+        <span class="article-meta__tags">
+          {% for tag in page.tags %}
+            <a class="site-chip" href="{{ '/blog/' | relative_url }}?tag={{ tag | downcase | url_encode }}">#{{ tag | downcase }}</a>
+          {% endfor %}
+        </span>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if series_doc %}
+    <details class="series-box" {% if part_index == 0 %}open{% endif %}>
+      <summary>
+        <span class="series-box__label">series</span>
+        <span class="series-box__title">{{ series_doc.title }}</span>
+        <span class="series-box__progress" aria-label="Part {{ part_index | plus: 1 }} of {{ series_parts.size }}">
+          {% for p in series_parts %}<span class="{% if forloop.index0 <= part_index %}is-done{% endif %}"></span>{% endfor %}
+        </span>
+        <span class="series-box__toggle">all parts</span>
+      </summary>
+      {% include site/parts_list.liquid series=page.series current=page.url %}
+    </details>
+  {% endif %}
+
+  <div class="article-grid">
+    <div class="article-body post-content" id="markdown-content">
+      {{ content }}
+    </div>
+    <aside class="article-toc" aria-label="On this page">
+      <div class="article-toc__inner" hidden>
+        <p class="article-toc__label">on this page</p>
+        <nav id="article-toc"></nav>
+      </div>
+    </aside>
+  </div>
+
+  {% if series_doc and prev_part or next_part %}
+    <nav class="article-pager" aria-label="Series navigation">
+      {% if prev_part %}
+        <a class="article-pager__prev" href="{{ prev_part.url | relative_url }}">
+          <span class="article-pager__label">&larr; part {{ prev_part.part | prepend: '0' | slice: -2, 2 }}</span>
+          <span class="article-pager__title">{{ prev_part.title }}</span>
+        </a>
+      {% endif %}
+      {% if next_part %}
+        <a class="article-pager__next" href="{{ next_part.url | relative_url }}">
+          <span class="article-pager__label">part {{ next_part.part | prepend: '0' | slice: -2, 2 }} &rarr;</span>
+          <span class="article-pager__title">{{ next_part.title }}</span>
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+  {% if page.citation %}
+    {% include citation.liquid %}
+  {% endif %}
+
+  {% if page.related_publications %}
+    <h2>References</h2>
+    <div class="publications">
+      {% bibliography --group_by none --cited_in_order %}
+    </div>
+  {% endif %}
+
+  {% include site/comments.liquid %}
+
+  {% if page.collection == 'posts' %}
+    {% if page.series %}
+      {% assign more = site.posts | where_exp: 'p', 'p.series != page.series' %}
+    {% else %}
+      {% assign more = site.posts | where_exp: 'p', 'p.url != page.url' %}
+    {% endif %}
+    {% if more.size > 0 %}
+      <section class="article-related">
+        <div class="site-section__head">
+          <span class="site-index">&rarr;</span>
+          <h2>Keep reading</h2>
+        </div>
+        <ul class="post-rows">
+          {% for p in more limit: 3 %}
+            {% include site/post_row.liquid post=p %}
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+  {% endif %}
+</article>

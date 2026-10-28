@@ -1,0 +1,16 @@
+{%- comment -%}
+  Ordered list of every part in a series.
+  include.series: the series slug; include.current: url of the part being read (optional)
+{%- endcomment -%}
+{% assign _parts = site.posts | where: 'series', include.series | sort: 'part' %}
+<ol class="parts-list">
+  {% for p in _parts %}
+    <li class="{% if p.url == include.current %}is-current{% endif %}">
+      <a href="{{ p.url | relative_url }}" {% if p.url == include.current %}aria-current="page"{% endif %}>
+        <span class="parts-list__n">{{ p.part | prepend: '0' | slice: -2, 2 }}</span>
+        <span class="parts-list__title">{{ p.title }}</span>
+        <span class="parts-list__time">{% include site/read_time.liquid post=p %} min</span>
+      </a>
+    </li>
+  {% endfor %}
+</ol>

@@ -1,0 +1,122 @@
+---
+layout: default
+---
+{%- comment -%}
+  Contact page: a real form that posts to Web3Forms or Formspree (see `contact_form:` in _config.yml).
+{%- endcomment -%}
+{% assign cf = site.contact_form %}
+{% if cf.provider == 'web3forms' and cf.access_key %}
+  {% assign form_action = 'https://api.web3forms.com/submit' %}
+{% elsif cf.provider == 'formspree' and cf.endpoint %}
+  {% assign form_action = cf.endpoint %}
+{% endif %}
+{% if site.data.socials.linkedin_username %}
+  {% capture fallback_url %}https://www.linkedin.com/in/{{ site.data.socials.linkedin_username }}{% endcapture %}
+{% endif %}
+
+<section class="site-hero">
+  <p class="site-eyebrow">contact</p>
+  <h1 class="site-display">{{ page.headline | default: "Let's talk" }}<span class="dot">.</span></h1>
+  <p class="site-lede">{{ page.intro }}</p>
+</section>
+
+<div class="contact-grid">
+  <div>
+    <form
+      class="contact-form"
+      data-contact-form
+      data-provider="{{ cf.provider }}"
+      data-subject="{{ cf.subject | escape }}"
+      {% if fallback_url %}data-fallback="{{ fallback_url }}"{% endif %}
+      action="{{ form_action }}"
+      method="POST"
+      novalidate
+    >
+      <h2>Send a message</h2>
+
+      {% if cf.provider == 'web3forms' %}
+        <input type="hidden" name="access_key" value="{{ cf.access_key }}">
+        <input type="hidden" name="subject" value="{{ cf.subject | escape }}">
+        <input type="checkbox" name="botcheck" class="contact-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      {% else %}
+        <input type="hidden" name="_subject" value="{{ cf.subject | escape }}">
+        <input type="text" name="_gotcha" class="contact-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      {% endif %}
+
+      <div class="contact-form__row">
+        <div class="contact-field">
+          <label for="cf-name">your name</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="contact-field">
+          <label for="cf-email">your email</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="contact-field">
+        <label for="cf-org">organisation <span class="quiet">(optional)</span></label>
+        <input id="cf-org" name="organisation" type="text" autocomplete="organization">
+      </div>
+
+      {% if cf.topics.size > 0 %}
+        <fieldset>
+          <legend>what's it about?</legend>
+          <div class="contact-topics">
+            {% for t in cf.topics %}
+              <input type="radio" id="cf-topic-{{ forloop.index }}" name="topic" value="{{ t | escape }}" {% if forloop.first %}checked{% endif %}>
+              <label for="cf-topic-{{ forloop.index }}">{{ t | downcase }}</label>
+            {% endfor %}
+          </div>
+        </fieldset>
+      {% endif %}
+
+      <div class="contact-field">
+        <label for="cf-message">message</label>
+        <textarea id="cf-message" name="message" minlength="20" required placeholder="A bit of context helps: what you're working on and how I might help."></textarea>
+      </div>
+
+      <div class="contact-form__foot">
+        <button class="site-btn" type="submit" {% unless form_action %}disabled{% endunless %}>Send message &rarr;</button>
+        <p class="contact-form__note">
+          {% if form_action %}
+            Your details are only used to reply to you.
+          {% else %}
+            The form isn't connected yet. Set <code>contact_form</code> in _config.yml.
+          {% endif %}
+        </p>
+      </div>
+    </form>
+    <div class="contact-status" data-contact-status role="status" tabindex="-1" hidden></div>
+  </div>
+
+  <aside class="contact-aside">
+    <dl>
+      {% if cf.availability %}
+        <div>
+          <dt>[availability]</dt>
+          <dd><strong>{{ cf.availability }}</strong><span>Research, teaching and applied GenAI projects.</span></dd>
+        </div>
+      {% endif %}
+      {% if cf.location %}
+        <div>
+          <dt>[location]</dt>
+          <dd><strong>{{ cf.location }}</strong><span>Happy to work remotely.</span></dd>
+        </div>
+      {% endif %}
+      {% if cf.response_time %}
+        <div>
+          <dt>[response]</dt>
+          <dd><strong>{{ cf.response_time }}</strong><span>Every message is read by me, not a bot.</span></dd>
+        </div>
+      {% endif %}
+      <div>
+        <dt>[elsewhere]</dt>
+        <dd>
+          <span>{{ site.contact_note }}</span>
+          <div class="site-social">{% social_links %}</div>
+        </dd>
+      </div>
+    </dl>
+  </aside>
+</div>

@@ -1,0 +1,205 @@
+---
+layout: default
+---
+{%- comment -%}
+  Site override of al_folio_core's about layout. Same ingredients as al-folio
+  (bio, profile picture, CV from assets/json/resume.json, projects, selected
+  papers, latest posts, socials), arranged as numbered sections.
+{%- endcomment -%}
+{% assign section = 0 %}
+
+<section class="site-hero home-hero">
+  <p class="home-hero__role"><span class="home-hero__pulse" aria-hidden="true"></span>{{ page.subtitle | downcase }}</p>
+  <h1 class="site-display">{{ page.headline | default: site.first_name }}<span class="dot">.</span></h1>
+  {% if page.intro %}<p class="site-lede">{{ page.intro }}</p>{% endif %}
+  <div class="site-actions">
+    <a class="site-btn" href="{{ '/blog/' | relative_url }}">Read the blog &rarr;</a>
+    <a class="site-btn site-btn--ghost" href="{{ '/contact/' | relative_url }}">Get in touch</a>
+  </div>
+</section>
+
+<!-- Bio -->
+{% assign section = section | plus: 1 %}
+<section class="site-section" id="about">
+  <div class="site-section__head">
+    <span class="site-index">0{{ section }}</span>
+    <h2>About</h2>
+  </div>
+  <div class="home-bio">
+    <div class="home-bio__text">{{ content }}</div>
+    {% if page.profile.image %}
+      <div class="home-portrait">
+        {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
+        {% include figure.liquid loading="eager" path=profile_image_path alt="Portrait of Yasser Khalafaoui" sizes="(min-width: 768px) 24rem, 90vw" cache_bust=true %}
+        {% if page.profile.caption %}<p class="home-portrait__caption">{{ page.profile.caption }}</p>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Focus areas -->
+{% if page.focus %}
+  {% assign section = section | plus: 1 %}
+  <section class="site-section" id="focus">
+    <div class="site-section__head">
+      <span class="site-index">0{{ section }}</span>
+      <h2>What I work on</h2>
+    </div>
+    <div class="home-facts">
+      {% for f in page.focus %}
+        <div>
+          <p class="home-facts__label">[{{ f.label }}]</p>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<!-- Latest writing -->
+{% if page.latest_posts and site.posts.size > 0 %}
+  {% assign section = section | plus: 1 %}
+  {% assign all_series = site.series | sort: 'order' %}
+  {% assign standalone = site.posts | where_exp: 'p', 'p.series == nil' %}
+  <section class="site-section" id="writing">
+    <div class="site-section__head">
+      <span class="site-index">0{{ section }}</span>
+      <h2>Latest writing</h2>
+      <a class="site-link-arrow site-section__more" href="{{ '/blog/' | relative_url }}">all posts &rarr;</a>
+    </div>
+    {% for s in all_series limit: 1 %}
+      {% include site/series_card.liquid series=s index=forloop.index %}
+    {% endfor %}
+    {% if standalone.size > 0 %}
+      <ul class="post-rows" style="margin-top: 2rem">
+        {% for p in standalone limit: 3 %}
+          {% include site/post_row.liquid post=p %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+{% endif %}
+
+<!-- Experience and education, from assets/json/resume.json -->
+{% assign resume = site.data.resume %}
+{% if resume.work.size > 0 or resume.education.size > 0 %}
+  {% assign section = section | plus: 1 %}
+  <section class="site-section" id="experience">
+    <div class="site-section__head">
+      <span class="site-index">0{{ section }}</span>
+      <h2>Experience</h2>
+    </div>
+
+    {% if resume.work.size > 0 %}
+      <div class="timeline-group">
+        <p class="timeline-group__title">// work</p>
+        <ol class="timeline">
+          {% for w in resume.work %}
+            <li>
+              <div class="timeline__when">
+                {{ w.startDate | date: '%b %Y' | downcase }} &ndash;
+                {% if w.endDate == 'Pres.' or w.endDate == '' or w.endDate == nil %}now{% else %}{{ w.endDate | date: '%b %Y' | downcase }}{% endif %}
+              </div>
+              <div>
+                <h3>{{ w.position }}</h3>
+                <div class="timeline__where">
+                  {% if w.url %}<a href="{{ w.url }}">@ {{ w.name | downcase }}</a>{% else %}@ {{ w.name | downcase }}{% endif %}
+                </div>
+                {% if w.summary %}<p>{{ w.summary }}</p>{% endif %}
+                {% if w.highlights.size > 0 and w.highlights != '' %}
+                  <ul>
+                    {% for h in w.highlights %}<li>{{ h }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% if resume.education.size > 0 %}
+      <div class="timeline-group">
+        <p class="timeline-group__title">// education</p>
+        <ol class="timeline">
+          {% for e in resume.education %}
+            <li>
+              <div class="timeline__when">
+                {{ e.startDate | date: '%Y' }} &ndash; {{ e.endDate | date: '%Y' }}
+              </div>
+              <div>
+                <h3>{{ e.studyType }}</h3>
+                <div class="timeline__where">
+                  {% if e.url %}<a href="{{ e.url }}">@ {{ e.institution | downcase }}</a>{% else %}@ {{ e.institution | downcase }}{% endif %}
+                </div>
+                {% if e.summary %}<p>{{ e.summary }}</p>{% endif %}
+                {% if e.courses.size > 0 and e.courses != '' %}
+                  <ul>
+                    {% for c in e.courses %}<li>{{ c }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% if resume.others.size > 0 %}
+      <div class="timeline-group">
+        <p class="timeline-group__title">// also</p>
+        <ol class="timeline">
+          {% for o in resume.others %}
+            <li>
+              <div class="timeline__when">{{ o.name | downcase }}</div>
+              <div>
+                <ul>
+                  {% for k in o.keywords %}<li>{{ k }}</li>{% endfor %}
+                </ul>
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+  </section>
+{% endif %}
+
+<!-- Projects -->
+{% assign projects = site.projects | sort: 'importance' %}
+{% if projects.size > 0 %}
+  {% assign section = section | plus: 1 %}
+  <section class="site-section" id="projects">
+    <div class="site-section__head">
+      <span class="site-index">0{{ section }}</span>
+      <h2>Selected projects</h2>
+      <p>Applied work, from AI mentoring to emotion recognition.</p>
+    </div>
+    <div class="work-grid">
+      {% for project in projects %}
+        <a class="work-card" href="{% if project.redirect %}{{ project.redirect }}{% else %}{{ project.url | relative_url }}{% endif %}">
+          {% if project.img %}
+            <div class="work-card__media"><img src="{{ project.img | relative_url }}" alt="" loading="lazy"></div>
+          {% endif %}
+          <span class="site-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.description }}</p>
+          <span class="site-link-arrow">read the write-up &rarr;</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<!-- Selected papers -->
+{% if page.selected_papers %}
+  {% assign section = section | plus: 1 %}
+  <section class="site-section home-pubs" id="publications">
+    <div class="site-section__head">
+      <span class="site-index">0{{ section }}</span>
+      <h2>Selected publications</h2>
+    </div>
+    {% include selected_papers.liquid %}
+  </section>
+{% endif %}

@@ -1,67 +1,16 @@
 ---
-layout: distill
-title: Stable Diffusion Series 3/5 - Attention Mechanisms Explained
-description: Understand the role of attention mechanism in the architecture of Stable Diffusion models.
+title: Attention Mechanisms Explained
+description: "Understand the role of the attention mechanism in the architecture of Stable Diffusion models."
+date: 2025-01-12 11:00:00 +0100
+series: stable-diffusion
+part: 3
+tags: [attention, transformers]
+cover: assets/img/attention_meme.png
 giscus_comments: true
-date: 2025-01-12
-tags: [Stable Diffusion, Attention]
-categories: Implementation
-
-#authors:
-#  - name: Yasser KHALAFAOUI
-#    url: "https://en.wikipedia.org/wiki/Albert_Einstein"
-#    affiliations:
-#      name: IAS, Princeton
-#  - name: Boris Podolsky
-#    url: "https://en.wikipedia.org/wiki/Boris_Podolsky"
-#    affiliations:
-#      name: IAS, Princeton
-#  - name: Nathan Rosen
-#    url: "https://en.wikipedia.org/wiki/Nathan_Rosen"
-#    affiliations:
-#      name: IAS, Princeton
-
-bibliography: 2018-12-22-distill.bib
-
-# Optionally, you can add a table of contents to your post.
-# NOTES:
-#   - make sure that TOC names match the actual section names
-#     for hyperlinks within the post to work correctly.
-#   - we may want to automate TOC generation in the future using
-#     jekyll-toc plugin (https://github.com/toshimaru/jekyll-toc).
-toc:
-    - name: Introduction
-    - name: Tokenization
-    - name: Word embeddings
-    - name: Contextual word embeddings
-    - name: How does Attention mechanism work?
-    - name: Understanding the scaled dot-product Attention
-    - name: Masking
-    - name: Multi-head Attention
-    - name: Implementation
-
-# Below is an example of injecting additional post-specific styles.
-# If you use this post as a template, delete this _styles block.
-_styles: >
-  .fake-img {
-    background: #bbb;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 12px;
-  }
-  .fake-img p {
-    font-family: monospace;
-    color: white;
-    text-align: left;
-    margin: 12px 0;
-    text-align: center;
-    font-size: 16px;
-  }
-
 ---
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/attention_meme.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/attention_meme.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -81,7 +30,7 @@ Before discussing embeddings, it’s important to grasp tokenization—the proce
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/tokenization.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/tokenization.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -100,7 +49,7 @@ These embeddings exist within what’s called the **embedding space** or **vecto
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/vector_space.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/vector_space.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -114,7 +63,7 @@ Language is contextual — words can change their meaning depending on the surro
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/context_embed_space.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/context_embed_space.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -126,9 +75,9 @@ One way to test this is to compare two models with different context windows: a 
 So far, we've discussed how embeddings capture the meaning of words in context. But not all words in a context window are equally important. In fact, certain words contribute much more to understanding the meaning of a specific word than others. This is where the **Attention mechanism** comes into play, a fundamental concept in transformer models. Attention allows the model to focus on the most relevant words in the context, giving more weight to those that are crucial for understanding the current word or token.
 
 # How does Attention mechanism work?
-The attention mechanism was originally introduced by Dzmitry Bahdanau and colleagues <d-cite key="bahdanau2014neural"></d-cite> to enhance sequence-to-sequence models. Its purpose was to allow the decoder to focus on specific parts of the input sequence—encoded by the encoder—at each step. This proved particularly useful in tasks like machine translation, where the decoder must generate output based on relevant sections of the source sentence.
+The attention mechanism was originally introduced by Dzmitry Bahdanau and colleagues[^bahdanau2014neural] to enhance sequence-to-sequence models. Its purpose was to allow the decoder to focus on specific parts of the input sequence—encoded by the encoder—at each step. This proved particularly useful in tasks like machine translation, where the decoder must generate output based on relevant sections of the source sentence.
 
-Over time, several variations of attention have been proposed <d-cite key="luong2015effective"></d-cite>, but we will focus on the Scaled Dot-Product Attention introduced in the transformer architecture <d-cite key="vaswani2017attention"></d-cite>. This mechanism is central to modern models like GPT and BERT, providing a way to weigh different parts of the input sequence based on their importance to the current task.
+Over time, several variations of attention have been proposed[^luong2015effective], but we will focus on the Scaled Dot-Product Attention introduced in the transformer architecture[^vaswani2017attention]. This mechanism is central to modern models like GPT and BERT, providing a way to weigh different parts of the input sequence based on their importance to the current task.
 
 To build a deeper intuition for how transformers work, I highly recommend watching Grant Sanderson’s explanation on his YouTube channel, <a href="https://www.youtube.com/watch?v=wjZofJX0v4M">3Blue1Brown</a>. His visual breakdowns are incredibly insightful.
 
@@ -157,7 +106,7 @@ For example, in the sentence “The cat sat on the mat,” the word “cat” wo
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/attn_selfattn.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/attn_selfattn.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -168,7 +117,7 @@ For example, in the sentence “The cat sat on the mat,” the word “cat” wo
 Now that we have an intuition behind the attention mechanism, let’s dive deeper into the Scaled Dot-Product Attention used in transformers. This form of attention is defined mathematically as follows,
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/attention_formula.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/attention_formula.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -199,7 +148,7 @@ The simplest way to implement masking is by modifying the attention weights of f
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/masking.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/masking.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -226,7 +175,7 @@ Here’s a step-by-step breakdown of the multi-head attention process:  For each
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/multihead.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/multihead.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -304,17 +253,15 @@ class SelfAttention(keras.layers.Layer):
 {% endhighlight %}
 
 The multi-head attention code is divided into 6 main sections:
-- **Input projection <d-code language="python">self.in_proj</d-code> -** This layer projects the input embeddings in a vector space then splits, along the last dimension, the resulting matrix into three separate matrices for queries, keys, and values, required for the attention mechanism.
-- **Multi-head splitting -** The queries, keys, and values are reshaped into separate heads. Each head works independently on a smaller dimension <d-code language="python">d_head</d-code>, which improves performance and allows for capturing diverse patterns.
+- **Input projection `self.in_proj` -** This layer projects the input embeddings in a vector space then splits, along the last dimension, the resulting matrix into three separate matrices for queries, keys, and values, required for the attention mechanism.
+- **Multi-head splitting -** The queries, keys, and values are reshaped into separate heads. Each head works independently on a smaller dimension `d_head`, which improves performance and allows for capturing diverse patterns.
 - **Scaled dot-product attention -** The attention score is calculated using the dot product of queries $$Q$$ and transposed keys $$K^T$$. The result is scaled by the square root of the head dimension to maintain stability during training.
 - **Causal masking -** For autoregressive tasks, this ensures that a token at position $$t$$ can only attend to tokens at positions $$\leq t$$.
 - **Attention Application -** The softmax function normalizes the scores into probabilities. These probabilities weight the values $$V$$ to compute the attention output.
-- **Output projection <d-code language="python">self.out_proj</d-code> -** After combining multi-head outputs into the original embedding space, a dense layer transforms the results back into the desired embedding dimension.
+- **Output projection `self.out_proj` -** After combining multi-head outputs into the original embedding space, a dense layer transforms the results back into the desired embedding dimension.
 
 And voilà! Hopefully, this chapter has equipped you with the knowledge to implement and debug an attention mechanism from scratch.
 
-Here are some more articles you might like to read next:
-- [Stable Diffusion Series 4/5 - Variational Auto-Encoders](../../2025/vae)
-- [Stable Diffusion Series 5/5 - Exploring Diffusion, Classifier-Free Guidance, UNET, and CLIP](../../2025/stable-diffusion)
-- [Stable Diffusion Series 1/5 - Introduction and Prerequisites](../../2025/intro)
-- [Stable Diffusion Series 2/5 - Convolution Layers Explained](../../2025/convolution)
+[^bahdanau2014neural]: D. Bahdanau, K. Cho and Y. Bengio. *Neural machine translation by jointly learning to align and translate.* [arXiv:1409.0473](https://arxiv.org/abs/1409.0473), 2014.
+[^luong2015effective]: M.-T. Luong, H. Pham and C. D. Manning. *Effective approaches to attention-based neural machine translation.* [arXiv:1508.04025](https://arxiv.org/abs/1508.04025), 2015.
+[^vaswani2017attention]: A. Vaswani et al. *Attention is all you need.* Advances in Neural Information Processing Systems, 2017. [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)

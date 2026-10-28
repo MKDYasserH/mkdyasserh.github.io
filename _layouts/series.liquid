@@ -1,0 +1,93 @@
+---
+layout: default
+---
+{%- comment -%} Landing page for one blog series (documents in the _series collection). {%- endcomment -%}
+{% assign parts = site.posts | where: 'series', page.slug | sort: 'part' %}
+{% assign total = 0 %}
+{% for p in parts %}
+  {% capture m %}{% include site/read_time.liquid post=p %}{% endcapture %}
+  {% assign total = total | plus: m %}
+{% endfor %}
+{% assign first = parts | first %}
+{% assign latest = parts | sort: 'date' | last %}
+
+<section class="site-hero series-hero">
+  <div>
+    <nav class="article-crumbs" aria-label="Breadcrumb">
+      <a href="{{ '/blog/' | relative_url }}">blog</a>
+      <span aria-hidden="true">/</span>
+      <span>series</span>
+    </nav>
+    <h1 class="site-display site-display--md">{{ page.title }}<span class="dot">.</span></h1>
+    {% if page.tagline %}<p class="site-lede">{{ page.tagline }}</p>{% endif %}
+    <dl class="series-facts">
+      <div>
+        <dt>parts</dt>
+        <dd>{{ parts.size }}</dd>
+      </div>
+      <div>
+        <dt>reading time</dt>
+        <dd>{{ total }} min</dd>
+      </div>
+      {% if page.level %}
+        <div>
+          <dt>level</dt>
+          <dd>{{ page.level }}</dd>
+        </div>
+      {% endif %}
+      {% if page.status %}
+        <div>
+          <dt>status</dt>
+          <dd><span class="series-status is-{{ page.status }}">{{ page.status }}</span></dd>
+        </div>
+      {% endif %}
+      {% if latest %}
+        <div>
+          <dt>last part</dt>
+          <dd>{{ latest.date | date: '%b %Y' }}</dd>
+        </div>
+      {% endif %}
+    </dl>
+    {% if first %}
+      <div class="site-actions">
+        <a class="site-btn" href="{{ first.url | relative_url }}">Start with part 01 &rarr;</a>
+      </div>
+    {% endif %}
+  </div>
+  {% if page.cover %}
+    <div class="series-hero__cover">
+      <img src="{{ page.cover | relative_url }}" alt="">
+    </div>
+  {% endif %}
+</section>
+
+<section class="site-section">
+  <div class="site-section__head">
+    <span class="site-index">01</span>
+    <h2>About this series</h2>
+  </div>
+  <div class="series-body">{{ content }}</div>
+</section>
+
+<section class="site-section">
+  <div class="site-section__head">
+    <span class="site-index">02</span>
+    <h2>The parts</h2>
+    <p>Read in order, each part builds on the previous one.</p>
+  </div>
+  <ol class="series-parts">
+    {% for p in parts %}
+      <li>
+        <a href="{{ p.url | relative_url }}">
+          <span class="site-num">{{ p.part | prepend: '0' | slice: -2, 2 }}</span>
+          <h3>{{ p.title }}</h3>
+          {% if p.description %}<p>{{ p.description }}</p>{% endif %}
+          <span class="series-parts__foot">
+            <span>{% include site/read_time.liquid post=p %} min read</span>
+            <span>read &rarr;</span>
+          </span>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>

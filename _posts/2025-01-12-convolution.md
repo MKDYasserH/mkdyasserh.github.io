@@ -1,63 +1,16 @@
 ---
-layout: distill
-title: Stable Diffusion Series 2/5 - Convolution Layers Explained
-description: Understand the role of convolutional layers in the architecture of Stable Diffusion models.
+title: Convolution Layers Explained
+description: "Understand the role of convolutional layers in the architecture of Stable Diffusion models."
+date: 2025-01-12 10:00:00 +0100
+series: stable-diffusion
+part: 2
+tags: [convolution, cnn]
+cover: assets/img/conv_attn_banner.jpg
 giscus_comments: true
-date: 2025-01-12
-tags: [Stable Diffusion, Convolution]
-categories: Implementation
-
-#authors:
-#  - name: Yasser KHALAFAOUI
-#    url: "https://en.wikipedia.org/wiki/Albert_Einstein"
-#    affiliations:
-#      name: IAS, Princeton
-#  - name: Boris Podolsky
-#    url: "https://en.wikipedia.org/wiki/Boris_Podolsky"
-#    affiliations:
-#      name: IAS, Princeton
-#  - name: Nathan Rosen
-#    url: "https://en.wikipedia.org/wiki/Nathan_Rosen"
-#    affiliations:
-#      name: IAS, Princeton
-
-bibliography: 2018-12-22-distill.bib
-
-# Optionally, you can add a table of contents to your post.
-# NOTES:
-#   - make sure that TOC names match the actual section names
-#     for hyperlinks within the post to work correctly.
-#   - we may want to automate TOC generation in the future using
-#     jekyll-toc plugin (https://github.com/toshimaru/jekyll-toc).
-toc:
-    - name: A brief history and why we need it
-    - name: What “Convolution” stands for in Convolution Neural Nets
-    - name: Filters
-    - name: Convolution layer equation
-    - name: Implementation
-
-# Below is an example of injecting additional post-specific styles.
-# If you use this post as a template, delete this _styles block.
-_styles: >
-  .fake-img {
-    background: #bbb;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 12px;
-  }
-  .fake-img p {
-    font-family: monospace;
-    color: white;
-    text-align: left;
-    margin: 12px 0;
-    text-align: center;
-    font-size: 16px;
-  }
-
 ---
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/conv_attn_banner.jpg" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/conv_attn_banner.jpg" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -68,11 +21,11 @@ In the early days of computer vision, researchers faced a significant challenge:
 
 Enter convolutional neural networks (CNNs), a groundbreaking approach that revolutionized how we process visual data. The concept of convolution itself isn't new; it's a mathematical operation that has been used for decades. However, its application in neural networks was a game changer.
 
-It was in 1998, that LeCun et al. introduced the famous LeNet-5 architecture <d-cite key="lecun1998gradient"></d-cite>, widely used for handwritten digit recognition, which combined fully connected layers, sigmoid activation functions and introduced convolution and pooling layers.
+It was in 1998, that LeCun et al. introduced the famous LeNet-5 architecture[^lecun1998gradient], widely used for handwritten digit recognition, which combined fully connected layers, sigmoid activation functions and introduced convolution and pooling layers.
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/RF.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/RF.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -86,7 +39,7 @@ Imagine you're given two lists of numbers and asked to produce a third list base
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/conv_formula.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/conv_formula.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -96,7 +49,7 @@ So how does this relate to our example of two lists of numbers? Well, $$ f $$ an
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/simple_example.gif" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/simple_example.gif" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -107,7 +60,7 @@ In a convolutional neural network, the input image of shape (height, width) is d
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/layer_example.gif" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/layer_example.gif" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -122,7 +75,7 @@ You might notice that with each convolution, the layers tend to shrink in size. 
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/nopad_nostride.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/nopad_nostride.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -131,7 +84,7 @@ You might notice that with each convolution, the layers tend to shrink in size. 
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/pad_nostride.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/pad_nostride.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -142,7 +95,7 @@ On the other hand, if we want the output to be much smaller, we can space out th
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/nopad_stride.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/nopad_stride.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -161,7 +114,7 @@ What sets CNNs apart from traditional ANNs is their ability to detect features r
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/filter_examples.gif" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/filter_examples.gif" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">
@@ -174,7 +127,7 @@ It is written as follows:
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/conv_layer_formula.png" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/conv_layer_formula.png" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -219,7 +172,7 @@ With that in mind, here’s how we define a convolutional layer in TensorFlow:
   print(output.shape)
 {% endhighlight %}
 
-This code snippet creates a convolutional layer, applies it to a random RGB image, and prints the shape of the output feature map. The output shape will depend on the filter size, stride, and padding we’ve defined. Now Let us understand each of the <d-code language="python">Conv2D</d-code> parameters:
+This code snippet creates a convolutional layer, applies it to a random RGB image, and prints the shape of the output feature map. The output shape will depend on the filter size, stride, and padding we’ve defined. Now Let us understand each of the `Conv2D` parameters:
 
 - **Filters -** This specifies the number of filters (or receptive fields) the convolutional layer will apply to the input. Each filter detects specific patterns or features in the image, such as edges, corners, or textures. As mentioned earlier, we can stack as many filters as needed, and each one will generate its own feature map.
 - **Kernel_size -** This defines the dimensions of each filter. It can either be a single integer or a tuple. In our case, the filters are $$3\times 3$$ matrices, which is a common choice for convolutional layers. 
@@ -230,10 +183,6 @@ This code snippet creates a convolutional layer, applies it to a random RGB imag
   
   - **same:** Zero-padding is applied evenly around the input to maintain the same height and width in the output feature map. This option is useful when you want the output dimensions to match the input dimensions.
   
--	**Data_format -** This determines the order of the dimensions in the input data. By default, TensorFlow uses <d-code language="python">channels_last</d-code>, where the channels (RGB) come last in the shape (i.e., (batch_size, height, width, channels)). If your input has the channels dimension first, as in (batch_size, channels, height, width), you’d use <d-code language="python">channels_first</d-code> to avoid any shape mismatch errors.
+-	**Data_format -** This determines the order of the dimensions in the input data. By default, TensorFlow uses `channels_last`, where the channels (RGB) come last in the shape (i.e., (batch_size, height, width, channels)). If your input has the channels dimension first, as in (batch_size, channels, height, width), you’d use `channels_first` to avoid any shape mismatch errors.
 
-Here are some more articles you might like to read next:
-- [Stable Diffusion Series 3/5 - Attention Mechanisms Explained](../../2025/attention)
-- [Stable Diffusion Series 4/5 - Variational Auto-Encoders](../../2025/vae)
-- [Stable Diffusion Series 5/5 - Exploring Diffusion, Classifier-Free Guidance, UNET, and CLIP](../../2025/stable-diffusion)
-- [Stable Diffusion Series 1/5 - Introduction and Prerequisites](../../2025/intro)
+[^lecun1998gradient]: Y. LeCun, L. Bottou, Y. Bengio and P. Haffner. *Gradient-based learning applied to document recognition.* Proceedings of the IEEE, 86(11), 1998.

@@ -1,0 +1,100 @@
+---
+layout: default
+permalink: /blog/
+title: blog
+nav: true
+nav_order: 1
+description: Long-form writing on generative AI. Multi-part series that build models from scratch, plus standalone articles.
+---
+
+{% assign all_series = site.series | sort: 'order' %}
+{% assign standalone = site.posts | where_exp: 'p', 'p.series == nil' %}
+{% assign topics = '' | split: '' %}
+{% for p in site.posts %}{% assign topics = topics | concat: p.tags %}{% endfor %}
+{% assign topics = topics | uniq | sort_natural %}
+
+<section class="site-hero">
+  <p class="site-eyebrow">the blog</p>
+  <h1 class="site-display">{{ site.blog_name }}<span class="dot">.</span></h1>
+  <p class="site-lede">{{ site.blog_description }} Deep dives come as <strong>series</strong>, read in order; everything else is a standalone <strong>article</strong>.</p>
+  <div class="blog-stats">
+    <span><strong>{{ site.posts.size }}</strong>posts</span>
+    <span><strong>{{ all_series.size }}</strong>{% if all_series.size == 1 %}series{% else %}series{% endif %}</span>
+    <span><strong>{{ standalone.size }}</strong>standalone</span>
+    <a class="site-link-arrow" href="{{ '/feed.xml' | relative_url }}">rss feed</a>
+  </div>
+</section>
+
+{% if topics.size > 0 %}
+
+  <div class="blog-filter" role="group" aria-label="Filter posts by topic" data-blog-filter>
+    <span class="blog-filter__label">filter</span>
+    <button type="button" class="site-chip" data-filter-tag="" aria-pressed="true">all</button>
+    {% for t in topics %}
+      <button type="button" class="site-chip" data-filter-tag="{{ t | downcase }}" aria-pressed="false">#{{ t | downcase }}</button>
+    {% endfor %}
+    <span class="blog-filter__count" data-filter-count aria-live="polite"></span>
+  </div>
+{% endif %}
+
+<section class="site-section" data-filter-section>
+  <div class="site-section__head">
+    <span class="site-index">01</span>
+    <h2>Series</h2>
+    <p>Multi-part deep dives. Each one is a single track you read from part 01 onwards.</p>
+  </div>
+  {% if all_series.size > 0 %}
+    {% for s in all_series %}
+      {% include site/series_card.liquid series=s index=forloop.index %}
+    {% endfor %}
+  {% else %}
+    <p class="blog-empty">No series yet.</p>
+  {% endif %}
+  <p class="blog-empty" data-filter-empty hidden>No series match this topic.</p>
+</section>
+
+<section class="site-section" data-filter-section>
+  <div class="site-section__head">
+    <span class="site-index">02</span>
+    <h2>Articles</h2>
+    <p>Standalone pieces: paper notes, opinions and experiments.</p>
+  </div>
+  {% if standalone.size > 0 %}
+    <ul class="post-rows">
+      {% for p in standalone %}
+        {% include site/post_row.liquid post=p %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="blog-empty">No standalone articles yet. The series above is the place to start.</p>
+  {% endif %}
+  <p class="blog-empty" data-filter-empty hidden>No articles match this topic.</p>
+</section>
+
+<section class="site-section" data-filter-section>
+  <div class="site-section__head">
+    <span class="site-index">03</span>
+    <h2>Archive</h2>
+    <p>Every post, newest first.</p>
+  </div>
+  {% assign by_year = site.posts | group_by_exp: 'p', "p.date | date: '%Y'" %}
+  {% for year in by_year %}
+    <div class="archive-year">
+      <h3>{{ year.name }}</h3>
+      <ul>
+        {% for p in year.items %}
+          <li data-filter-item data-kind="archive" data-tags="{{ p.tags | join: '|' | downcase }}">
+            <a href="{{ p.url | relative_url }}">
+              <span class="archive-year__date">{{ p.date | date: '%b %d' | downcase }}</span>
+              <span>{{ p.title }}</span>
+              {% if p.series %}
+                {% assign sdoc = site.series | where: 'slug', p.series | first %}
+                <span class="site-chip">{{ sdoc.title | default: p.series | downcase }} &middot; {{ p.part | prepend: '0' | slice: -2, 2 }}</span>
+              {% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</section>

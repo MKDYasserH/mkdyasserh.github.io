@@ -1,0 +1,22 @@
+{%- comment -%} A standalone post as a row. include.post {%- endcomment -%}
+{% assign p = include.post %}
+<li class="post-row" data-filter-item data-kind="article" data-tags="{{ p.tags | join: '|' | downcase }}">
+  {% if p.redirect contains '://' %}
+    <a href="{{ p.redirect }}" target="_blank" rel="noopener">
+  {% elsif p.redirect %}
+    <a href="{{ p.redirect | relative_url }}">
+  {% else %}
+    <a href="{{ p.url | relative_url }}">
+  {% endif %}
+    <span class="post-row__date">{{ p.date | date: '%b %d, %Y' | downcase }}</span>
+    <span>
+      <h3>{{ p.title }}</h3>
+      {% if p.description %}<p>{{ p.description }}</p>{% endif %}
+      <span class="post-row__tags">
+        <span class="site-chip">{% include site/read_time.liquid post=p %} min</span>
+        {% for t in p.tags limit: 4 %}<span class="site-chip">#{{ t | downcase }}</span>{% endfor %}
+      </span>
+    </span>
+    <span class="post-row__arrow" aria-hidden="true">{% if p.redirect contains '://' %}&nearr;{% else %}&rarr;{% endif %}</span>
+  </a>
+</li>

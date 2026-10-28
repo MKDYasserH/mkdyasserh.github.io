@@ -13,7 +13,7 @@ In this project, we are developing a multi-modal emotion recognition system that
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/em_rec_alteca.jpg" title="Emotion Recognition interface" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/em_rec_alteca.jpg" title="Emotion Recognition interface" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 <div class="caption">

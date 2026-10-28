@@ -1,0 +1,4 @@
+{%- comment -%} Minutes to read include.post (about 200 words a minute). {%- endcomment -%}
+{%- assign _words = include.post.content | strip_html | number_of_words -%}
+{%- assign _mins = _words | divided_by: 200 | plus: 1 -%}
+{{- _mins -}}

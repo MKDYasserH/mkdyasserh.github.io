@@ -1,0 +1,23 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    {% unless page.permalink == '/contact/' %}
+      <p class="site-eyebrow">have an idea, a question, or a role in mind?</p>
+      <a class="site-footer__big" href="{{ '/contact/' | relative_url }}">
+        Let's talk<span class="dot">.</span> <span class="site-footer__arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    {% endunless %}
+
+    <div class="site-footer__row">
+      <span class="mono">&copy; {{ site.time | date: '%Y' }} {{ site.first_name }} {{ site.last_name }}</span>
+      <div class="site-social">{% social_links %}</div>
+      <span class="mono">
+        {{- site.footer_text -}}
+        {% if site.impressum_path %}
+          <a href="{{ site.impressum_path | relative_url }}">Impressum</a>.
+        {% endif %}
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script defer src="{{ '/assets/js/site.js' | relative_url | bust_file_cache }}"></script>
