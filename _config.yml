@@ -13,7 +13,7 @@ description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Yasser Khalafaoui, PhD. AI researcher working on LLM safety and hallucination mitigation, writing about generative models.
 footer_text: >
   Built on <a href="https://github.com/alshedivat/al-folio">al-folio</a>. Hosted by <a href="https://pages.github.com/">GitHub Pages</a>.
-keywords: generative ai, llm safety, stable diffusion, machine learning, multimodal learning, research
+keywords: artificial intelligence, llm safety, stable diffusion, machine learning, multimodal learning, research
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon-32x32.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 apple_touch_icon: # image name in /assets/img/ (or a rooted path / absolute URL) used for iOS home-screen bookmarks; needs a real 180x180 PNG, since Safari ignores the emoji favicon above. Left empty, iOS falls back to a screenshot of the page.
