@@ -6,6 +6,8 @@ backend:
   name: github
   repo: MKDYasserH/mkdyasserh.github.io
   branch: master
+  # "Sign In with GitHub" goes through this Cloudflare Worker (repo MKDYasserH/sveltia-cms-auth)
+  base_url: https://sveltia-cms-auth.khalafaoui-yasser-a04.workers.dev
   commit_messages:
     create: "blog: create {{collection}} “{{slug}}”"
     update: "blog: update {{collection}} “{{slug}}”"

@@ -9,9 +9,11 @@ Built on [al-folio](https://github.com/alshedivat/al-folio) v1.x (Jekyll + the `
 You don't need to touch Markdown files or build anything locally.
 
 1. Open **<https://khalafaoui.com/admin/>**.
-2. Click **Sign In with Token** and paste a
+2. Click **Sign In with GitHub**. The login goes through a small Cloudflare Worker
+   (`sveltia-cms-auth`, built from [MKDYasserH/sveltia-cms-auth](https://github.com/MKDYasserH/sveltia-cms-auth))
+   that holds the GitHub OAuth app's secret. If it is ever down, **Sign In Using Access Token** with a
    [fine-grained token](https://github.com/settings/personal-access-tokens/new) limited to this repository
-   with **Contents: Read and write** (the sign-in screen links to the token page). The browser remembers it.
+   and **Contents: Read and write** works too.
 3. **Blog posts → New post**. Fill in the title, description and date, write the body, add images by dragging them in.
 4. **Save**. That commits the post to `master`, and the _Deploy site_ workflow publishes it in about two minutes.
 
