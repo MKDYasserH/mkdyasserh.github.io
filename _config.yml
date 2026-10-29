@@ -15,10 +15,10 @@ footer_text: >
   Built on <a href="https://github.com/alshedivat/al-folio">al-folio</a>. Hosted by <a href="https://pages.github.com/">GitHub Pages</a>.
 keywords: artificial intelligence, llm safety, stable diffusion, machine learning, multimodal learning, research
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: favicon-32x32.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
-apple_touch_icon: # image name in /assets/img/ (or a rooted path / absolute URL) used for iOS home-screen bookmarks; needs a real 180x180 PNG, since Safari ignores the emoji favicon above. Left empty, iOS falls back to a screenshot of the page.
+icon: favicon.svg # "YK." pixel monogram; /favicon.ico at the site root is the fallback for older browsers
+apple_touch_icon: apple-touch-icon.png # image name in /assets/img/ (or a rooted path / absolute URL) used for iOS home-screen bookmarks; needs a real 180x180 PNG, since Safari ignores the emoji favicon above. Left empty, iOS falls back to a screenshot of the page.
 
-url: https://mkdyasserh.github.io # the base hostname & protocol for your site
+url: https://khalafaoui.com # the base hostname & protocol for your site (custom domain, see CNAME)
 baseurl: # the subpath of your site, e.g. /blog/. Leave blank for root
 last_updated: false # set to true if you want to display last updated in the footer
 impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
@@ -154,7 +154,7 @@ giscus:
   repo: MKDYasserH/mkdyasserh.github.io # <your-github-user-name>/<your-github-repo-name>
   repo_id: R_kgDOKtOPJw # leave empty or specify your repo_id (see https://giscus.app/)
   category: Announcements # name of the category under which discussions will be created
-  category_id: # leave empty or specify your category_id (see https://giscus.app/)
+  category_id: DIC_kwDOKtOPJ84DJ7CC # "Announcements": only you and giscus can open threads, anyone can reply
   mapping: pathname # identify discussions by page path
   strict: 1 # use strict identification mode
   reactions_enabled: 1 # enable (1) or disable (0) emoji reactions
@@ -185,9 +185,9 @@ external_sources: []
 # The access key is meant to be public, it only lets people send you messages.
 contact_form:
   provider: web3forms
-  access_key: # paste your Web3Forms access key here
+  access_key: 9a37ce40-2195-44a8-8360-7f4c0af09911 # paste your Web3Forms access key here
   endpoint: # only for formspree
-  subject: New message from mkdyasserh.github.io
+  subject: New message from khalafaoui.com
   topics: [Research collaboration, Speaking or teaching, Consulting, Just saying hi]
   availability: Open to research collaborations
   location: Paris, France

@@ -338,7 +338,8 @@
 
       // honeypot: real people never fill this in
       const trap = form.querySelector("[name=botcheck], [name=_gotcha]");
-      if (trap && (trap.checked || trap.value)) return;
+      // (a checkbox's value is always "on", so only its checked state counts)
+      if (trap && (trap.type === "checkbox" ? trap.checked : trap.value)) return;
 
       const data = Object.fromEntries(new FormData(form).entries());
       if (provider === "web3forms") {

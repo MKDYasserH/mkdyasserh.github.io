@@ -4,7 +4,7 @@ title: about
 permalink: /
 subtitle: PhD · AI Researcher
 headline: Building AI people can trust
-intro: I'm Yasser Khalafaoui, an AI researcher. I make large language models reliable enough to put in front of real people, and I teach the next generation how to ship them.
+intro: I'm Yasser Khalafaoui, an AI researcher. I make AI models reliable enough to put in front of real people, and I teach the next generation how to ship them.
 
 profile:
   image: prof_pic.jpg

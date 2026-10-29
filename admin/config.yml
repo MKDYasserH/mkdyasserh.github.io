@@ -1,5 +1,5 @@
 # Sveltia CMS configuration: https://github.com/sveltia/sveltia-cms
-# Open https://mkdyasserh.github.io/admin/ to write and publish without touching files.
+# Open https://khalafaoui.com/admin/ to write and publish without touching files.
 # Every save is a commit to `master`; the "Deploy site" workflow then rebuilds the site (about 2 minutes).
 
 backend:
@@ -13,9 +13,9 @@ backend:
     uploadMedia: "blog: upload “{{path}}”"
     deleteMedia: "blog: delete “{{path}}”"
 
-site_url: https://mkdyasserh.github.io
-display_url: https://mkdyasserh.github.io
-logo_url: /assets/img/favicon-32x32.png
+site_url: https://khalafaoui.com
+display_url: https://khalafaoui.com
+logo_url: /assets/img/favicon.svg
 
 media_folder: assets/img/blog
 public_folder: /assets/img/blog

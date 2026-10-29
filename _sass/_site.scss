@@ -697,17 +697,20 @@ footer.site-footer {
 
   .home-portrait__frame {
     position: relative;
-    // leave room for the accent bar so it never overflows the column
-    margin-right: 0.6rem;
+    // own stacking context, so the block below sits behind the photo but not behind the page
+    isolation: isolate;
+    // leave room for the accent block so it never overflows the column
+    margin: 0 0.6rem 0.6rem 0;
 
     &::after {
-      // accent bar glued to the right edge of the photo
+      // accent block offset behind the photo: shows as a bar on the right and bottom edges
       content: "";
       position: absolute;
+      z-index: -1;
       top: 1.5rem;
-      bottom: 0;
-      left: 100%;
-      width: 0.6rem;
+      left: 1.5rem;
+      right: -0.6rem;
+      bottom: -0.6rem;
       background: var(--site-spot);
     }
   }

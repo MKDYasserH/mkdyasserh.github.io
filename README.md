@@ -1,6 +1,6 @@
 # mkdyasserh.github.io
 
-Personal site and blog (**Cracking AI**) of Yasser Khalafaoui. Live at <https://mkdyasserh.github.io>.
+Personal site and blog (**Cracking AI**) of Yasser Khalafaoui. Live at <https://khalafaoui.com> (the old <https://mkdyasserh.github.io> address redirects there).
 
 Built on [al-folio](https://github.com/alshedivat/al-folio) v1.x (Jekyll + the `al_folio_*` plugin gems), with a custom design layer on top.
 
@@ -8,7 +8,7 @@ Built on [al-folio](https://github.com/alshedivat/al-folio) v1.x (Jekyll + the `
 
 You don't need to touch Markdown files or build anything locally.
 
-1. Open **<https://mkdyasserh.github.io/admin/>**.
+1. Open **<https://khalafaoui.com/admin/>**.
 2. Click **Sign In with Token** and paste a
    [fine-grained token](https://github.com/settings/personal-access-tokens/new) limited to this repository
    with **Contents: Read and write** (the sign-in screen links to the token page). The browser remembers it.
