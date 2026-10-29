@@ -30,6 +30,7 @@ module.exports = {
     "is-done",
     "is-current",
     "is-sub",
+    "is-dim",
     /^contact-/,
     /^series-/,
     /^article-/,

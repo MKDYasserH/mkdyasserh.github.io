@@ -6,11 +6,11 @@ title: blank # the website title (if blank, full name will be used instead)
 first_name: Yasser
 middle_name:
 last_name: Khalafaoui
-brand_tagline: genai researcher # short mono label shown next to your name in the navbar
+brand_tagline: AI researcher # short mono label shown next to your name in the navbar
 contact_note: >
   You can also find me here.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Yasser Khalafaoui, PhD. Generative AI researcher writing about LLM safety, diffusion models and multimodal learning.
+  Yasser Khalafaoui, PhD. AI researcher working on LLM safety and hallucination mitigation, writing about generative models.
 footer_text: >
   Built on <a href="https://github.com/alshedivat/al-folio">al-folio</a>. Hosted by <a href="https://pages.github.com/">GitHub Pages</a>.
 keywords: generative ai, llm safety, stable diffusion, machine learning, multimodal learning, research
@@ -136,7 +136,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # -----------------------------------------------------------------------------
 
 blog_name: Cracking AI # blog_name will be displayed in your blog page
-blog_description: Generative AI, taken apart and rebuilt from scratch.
+blog_description: "Practical AI, explained three ways: the intuition, the understanding behind it, and an implementation you can run."
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
@@ -190,7 +190,7 @@ contact_form:
   subject: New message from mkdyasserh.github.io
   topics: [Research collaboration, Speaking or teaching, Consulting, Just saying hi]
   availability: Open to research collaborations
-  location: France
+  location: Paris, France
   response_time: Usually within 2 working days
 
 # -----------------------------------------------------------------------------

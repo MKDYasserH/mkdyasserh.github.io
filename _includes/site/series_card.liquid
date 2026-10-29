@@ -3,14 +3,23 @@
 {% assign _parts = site.posts | where: 'series', s.slug | sort: 'part' %}
 {% assign _total = 0 %}
 {% assign _tags = '' | split: '' %}
+{% assign _years = '' | split: '' %}
+{% assign _search = s.title | append: ' ' | append: s.description | append: ' ' | append: s.tagline %}
 {% for p in _parts %}
+  {% assign _y = p.date | date: '%Y' %}
+  {% assign _years = _years | push: _y %}
+  {% assign _search = _search | append: ' ' | append: p.title | append: ' ' | append: p.description %}
   {% capture _m %}{% include site/read_time.liquid post=p %}{% endcapture %}
   {% assign _total = _total | plus: _m %}
   {% assign _tags = _tags | concat: p.tags %}
 {% endfor %}
 {% assign _tags = _tags | uniq %}
+{% assign _years = _years | uniq %}
+{% assign _tagtext = _tags | join: ' ' %}
+{% assign _search = _search | append: ' ' | append: _tagtext %}
+{% assign _latest = _parts | sort: 'date' | last %}
 {% assign _first = _parts | first %}
-<article class="series-card" data-filter-item data-kind="series" data-tags="{{ _tags | join: '|' | downcase }}">
+<article class="series-card" data-filter-item data-kind="series" data-type="series" data-tags="{{ _tags | join: '|' | downcase | escape }}" data-year="{{ _years | join: '|' }}" data-date="{{ _latest.date | date: '%s' }}" data-search="{{ _search | strip_html | downcase | escape }}">
   {% if s.cover %}
     <a class="series-card__cover" href="{{ s.url | relative_url }}" tabindex="-1" aria-hidden="true">
       <img src="{{ s.cover | relative_url }}" alt="" loading="lazy">
@@ -21,7 +30,7 @@
       <span class="site-num">S{{ include.index | prepend: '0' | slice: -2, 2 }}</span>
       <span>{{ _parts.size }} parts</span>
       <span>{{ _total }} min total</span>
-      {% if s.level %}<span>{{ s.level | downcase }}</span>{% endif %}
+      {% if s.level %}<span>{{ s.level }}</span>{% endif %}
       {% if s.status %}<span class="series-status is-{{ s.status }}">{{ s.status }}</span>{% endif %}
     </div>
     <h3><a href="{{ s.url | relative_url }}">{{ s.title }}</a></h3>

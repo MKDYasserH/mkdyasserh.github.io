@@ -65,7 +65,7 @@ layout: default
           <div class="contact-topics">
             {% for t in cf.topics %}
               <input type="radio" id="cf-topic-{{ forloop.index }}" name="topic" value="{{ t | escape }}" {% if forloop.first %}checked{% endif %}>
-              <label for="cf-topic-{{ forloop.index }}">{{ t | downcase }}</label>
+              <label for="cf-topic-{{ forloop.index }}">{{ t }}</label>
             {% endfor %}
           </div>
         </fieldset>
@@ -95,7 +95,7 @@ layout: default
       {% if cf.availability %}
         <div>
           <dt>[availability]</dt>
-          <dd><strong>{{ cf.availability }}</strong><span>Research, teaching and applied GenAI projects.</span></dd>
+          <dd><strong>{{ cf.availability }}</strong><span>Research, teaching and applied AI projects.</span></dd>
         </div>
       {% endif %}
       {% if cf.location %}

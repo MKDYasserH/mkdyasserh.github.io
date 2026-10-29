@@ -1,0 +1,7 @@
+{%- comment -%}
+  Data attributes the blog filter (assets/js/site.js) reads from one post: include.post
+{%- endcomment -%}
+{%- assign _p = include.post -%}
+{%- assign _sdoc = site.series | where: 'slug', _p.series | first -%}
+{%- assign _tagtext = _p.tags | join: ' ' -%}
+data-filter-item data-type="{% if _p.series %}series{% else %}article{% endif %}" data-tags="{{ _p.tags | join: '|' | downcase | escape }}" data-year="{{ _p.date | date: '%Y' }}" data-date="{{ _p.date | date: '%s' }}" data-search="{{ _p.title | append: ' ' | append: _p.description | append: ' ' | append: _sdoc.title | append: ' ' | append: _tagtext | strip_html | downcase | escape }}"

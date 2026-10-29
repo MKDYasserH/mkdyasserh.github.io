@@ -1,6 +1,6 @@
 {%- comment -%} A standalone post as a row. include.post {%- endcomment -%}
 {% assign p = include.post %}
-<li class="post-row" data-filter-item data-kind="article" data-tags="{{ p.tags | join: '|' | downcase }}">
+<li class="post-row" {% include site/filter_attrs.liquid post=p %} data-kind="article">
   {% if p.redirect contains '://' %}
     <a href="{{ p.redirect }}" target="_blank" rel="noopener">
   {% elsif p.redirect %}
@@ -8,7 +8,7 @@
   {% else %}
     <a href="{{ p.url | relative_url }}">
   {% endif %}
-    <span class="post-row__date">{{ p.date | date: '%b %d, %Y' | downcase }}</span>
+    <span class="post-row__date">{{ p.date | date: '%b %-d, %Y' }}</span>
     <span>
       <h3>{{ p.title }}</h3>
       {% if p.description %}<p>{{ p.description }}</p>{% endif %}

@@ -5,7 +5,8 @@
 {% assign _parts = site.posts | where: 'series', include.series | sort: 'part' %}
 <ol class="parts-list">
   {% for p in _parts %}
-    <li class="{% if p.url == include.current %}is-current{% endif %}">
+    {% assign _tagtext = p.tags | join: ' ' %}
+    <li class="{% if p.url == include.current %}is-current{% endif %}" data-part data-tags="{{ p.tags | join: '|' | downcase | escape }}" data-year="{{ p.date | date: '%Y' }}" data-search="{{ p.title | append: ' ' | append: p.description | append: ' ' | append: _tagtext | strip_html | downcase | escape }}">
       <a href="{{ p.url | relative_url }}" {% if p.url == include.current %}aria-current="page"{% endif %}>
         <span class="parts-list__n">{{ p.part | prepend: '0' | slice: -2, 2 }}</span>
         <span class="parts-list__title">{{ p.title }}</span>

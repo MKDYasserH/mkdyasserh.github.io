@@ -31,7 +31,7 @@ layout: default
       <a href="{{ '/blog/' | relative_url }}">blog</a>
       {% if series_doc %}
         <span aria-hidden="true">/</span>
-        <a href="{{ series_doc.url | relative_url }}">{{ series_doc.title | downcase }}</a>
+        <a href="{{ series_doc.url | relative_url }}">{{ series_doc.title }}</a>
         <span aria-hidden="true">/</span>
         <span>part {{ page.part | prepend: '0' | slice: -2, 2 }} of {{ series_parts.size | prepend: '0' | slice: -2, 2 }}</span>
       {% elsif page.collection == 'news' %}
@@ -43,9 +43,9 @@ layout: default
       <p class="article-lede">{{ page.description }}</p>
     {% endif %}
     <div class="article-meta">
-      <span>{{ page.date | date: '%B %-d, %Y' | downcase }}</span>
+      <span>{{ page.date | date: '%B %-d, %Y' }}</span>
       {% assign last_date = page.last_modified_at | default: page.last_updated %}
-      {% if last_date %}<span>updated {{ last_date | date: '%B %-d, %Y' | downcase }}</span>{% endif %}
+      {% if last_date %}<span>updated {{ last_date | date: '%B %-d, %Y' }}</span>{% endif %}
       <span>{% include site/read_time.liquid post=page %} min read</span>
       {% if page.tags.size > 0 %}
         <span class="article-meta__tags">

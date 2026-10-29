@@ -69,52 +69,205 @@
   }
 
   /* ---------------------------------------------------------------------------
-   * Blog index: filter series, articles and archive rows by topic
+   * Blog index: keyword search plus type, topic, year and sort filters.
+   * State lives in the URL (?q=&tag=&type=&year=&sort=) so filtered views can be shared.
    * ------------------------------------------------------------------------ */
   function initBlogFilter() {
     const bar = document.querySelector("[data-blog-filter]");
     if (!bar) return;
 
-    const buttons = Array.from(bar.querySelectorAll("[data-filter-tag]"));
+    const qInput = bar.querySelector("[data-filter-q]");
+    const typeButtons = Array.from(bar.querySelectorAll("[data-filter-type]"));
+    const tagButtons = Array.from(bar.querySelectorAll("[data-filter-tag]"));
+    const moreSelect = bar.querySelector("[data-filter-more]");
+    const yearSelect = bar.querySelector("[data-filter-year]");
+    const sortSelect = bar.querySelector("[data-filter-sort]");
+    const resets = Array.from(document.querySelectorAll("[data-filter-reset]"));
+    const barReset = bar.querySelector("[data-filter-reset]");
+    const count = bar.querySelector("[data-filter-count]");
     const items = Array.from(document.querySelectorAll("[data-filter-item]"));
     const sections = Array.from(document.querySelectorAll("[data-filter-section]"));
-    const count = bar.querySelector("[data-filter-count]");
+    const archive = document.querySelector("[data-archive]");
+    const total = items.filter((i) => i.dataset.kind === "archive").length;
+    const knownTags = new Set(
+      tagButtons.map((b) => b.dataset.filterTag).concat(moreSelect ? Array.from(moreSelect.options, (o) => o.value) : [])
+    );
 
-    const apply = (tag, updateUrl) => {
-      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filterTag === tag)));
+    const state = { q: "", tag: "", type: "", year: "", sort: "new" };
 
-      let shown = 0;
+    // every word must appear somewhere in the item's text
+    const matchesQuery = (el) => {
+      if (!state.q) return true;
+      const text = el.dataset.search || "";
+      return state.q.split(/\s+/).every((word) => text.includes(word));
+    };
+    const matchesTag = (el) => !state.tag || (el.dataset.tags || "").split("|").includes(state.tag);
+    const matchesYear = (el) => !state.year || (el.dataset.year || "").split("|").includes(state.year);
+    const matchesType = (el) => !state.type || el.dataset.type === state.type;
+
+    const sortChildren = (parent, selector, key) => {
+      const children = Array.from(parent.querySelectorAll(selector)).filter((c) => c.parentElement === parent);
+      children.sort((a, b) => (state.sort === "old" ? key(a) - key(b) : key(b) - key(a)));
+      children.forEach((c) => parent.appendChild(c));
+    };
+
+    // after a filter change, jump back to the top of the results if we're scrolled past them
+    const revealResults = () => {
+      const first = sections.find((s) => !s.hasAttribute("data-filter-hidden"));
+      if (!first) return;
+      const offset = bar.getBoundingClientRect().bottom + 16;
+      const top = first.getBoundingClientRect().top + window.scrollY - offset;
+      if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
+    };
+
+    const apply = (updateUrl) => {
+      const active = Boolean(state.q || state.tag || state.type || state.year);
+
       items.forEach((item) => {
-        const tags = (item.dataset.tags || "").split("|");
-        const match = !tag || tags.includes(tag);
+        let match = matchesType(item) && matchesTag(item) && matchesYear(item) && matchesQuery(item);
+
+        // a series card stays visible when any of its parts matches, and dims the parts that don't
+        if (item.dataset.kind === "series") {
+          const parts = Array.from(item.querySelectorAll("[data-part]"));
+          const partMatches = parts.map((part) => matchesTag(part) && matchesYear(part) && matchesQuery(part));
+          const anyPart = partMatches.some(Boolean);
+          const cardMatchesText = matchesQuery(item) && !state.tag && !state.year;
+          match = matchesType(item) && (anyPart || cardMatchesText);
+          // point at the matching parts; if only the series blurb matched, show every part normally
+          parts.forEach((part, i) => part.classList.toggle("is-dim", active && anyPart && !partMatches[i]));
+        }
+
         item.toggleAttribute("data-filter-hidden", !match);
-        if (match && item.dataset.kind === "archive") shown += 1;
       });
 
       sections.forEach((section) => {
-        const own = section.querySelectorAll("[data-filter-item]");
+        const own = Array.from(section.querySelectorAll("[data-filter-item]"));
+        const anyVisible = own.some((el) => !el.hasAttribute("data-filter-hidden"));
         const empty = section.querySelector("[data-filter-empty]");
-        if (!empty || own.length === 0) return;
-        const visible = Array.from(own).some((el) => !el.hasAttribute("data-filter-hidden"));
-        empty.hidden = visible;
+
+        if (section.dataset.sectionType) {
+          // while filtering, the Series / Articles sections only show up when they have something to show
+          const wrongType = state.type && section.dataset.sectionType !== state.type;
+          section.toggleAttribute("data-filter-hidden", Boolean(wrongType || (active && !anyVisible)));
+        } else if (empty) {
+          // the archive always lists every match, and says so when there are none
+          empty.hidden = anyVisible;
+        }
       });
 
-      if (count) count.textContent = tag ? `${shown} post${shown === 1 ? "" : "s"}` : "";
+      // hide year groups in the archive that end up empty
+      document.querySelectorAll("[data-archive-year]").forEach((group) => {
+        const visible = group.querySelector("[data-filter-item]:not([data-filter-hidden])");
+        group.toggleAttribute("data-filter-hidden", !visible);
+      });
+
+      // ordering
+      document.querySelectorAll(".post-rows").forEach((list) => sortChildren(list, "li", (el) => Number(el.dataset.date || 0)));
+      if (archive) {
+        sortChildren(archive, "[data-archive-year]", (el) => Number(el.dataset.archiveYear));
+        archive.querySelectorAll("[data-archive-year] ul").forEach((list) => sortChildren(list, "li", (el) => Number(el.dataset.date || 0)));
+      }
+
+      // controls reflect state
+      typeButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filterType === state.type)));
+      tagButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filterTag === state.tag)));
+      if (moreSelect) {
+        const inMore = Array.from(moreSelect.options).some((o) => o.value && o.value === state.tag);
+        moreSelect.value = inMore ? state.tag : "";
+        moreSelect.classList.toggle("is-active", inMore);
+      }
+      if (yearSelect) yearSelect.value = state.year;
+      if (sortSelect) sortSelect.value = state.sort;
+      if (qInput && qInput.value.trim().toLowerCase() !== state.q) qInput.value = state.q;
+      if (barReset) barReset.hidden = !active;
+
+      if (count) {
+        const shown = items.filter((i) => i.dataset.kind === "archive" && !i.hasAttribute("data-filter-hidden")).length;
+        count.textContent = active ? `${shown} of ${total} post${total === 1 ? "" : "s"}` : `${total} post${total === 1 ? "" : "s"}`;
+      }
 
       if (updateUrl) {
         const url = new URL(window.location.href);
-        if (tag) url.searchParams.set("tag", tag);
-        else url.searchParams.delete("tag");
+        ["q", "tag", "type", "year"].forEach((k) => (state[k] ? url.searchParams.set(k, state[k]) : url.searchParams.delete(k)));
+        state.sort === "old" ? url.searchParams.set("sort", "old") : url.searchParams.delete("sort");
         window.history.replaceState({}, "", url);
       }
     };
 
-    buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.filterTag, true)));
-
-    const initial = new URLSearchParams(window.location.search).get("tag");
-    if (initial && buttons.some((b) => b.dataset.filterTag === initial.toLowerCase())) {
-      apply(initial.toLowerCase(), false);
+    // wire up controls
+    let typingTimer;
+    if (qInput) {
+      qInput.addEventListener("input", () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+          state.q = qInput.value.trim().toLowerCase();
+          apply(true);
+        }, 120);
+      });
+      qInput.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          qInput.value = "";
+          state.q = "";
+          apply(true);
+        }
+      });
+      // "/" jumps to the search box, like most docs sites
+      document.addEventListener("keydown", (e) => {
+        const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+        if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey) {
+          e.preventDefault();
+          qInput.focus();
+        }
+      });
     }
+    typeButtons.forEach((b) =>
+      b.addEventListener("click", () => {
+        state.type = b.dataset.filterType;
+        apply(true);
+        revealResults();
+      })
+    );
+    tagButtons.forEach((b) =>
+      b.addEventListener("click", () => {
+        state.tag = state.tag === b.dataset.filterTag ? "" : b.dataset.filterTag;
+        apply(true);
+        revealResults();
+      })
+    );
+    if (moreSelect)
+      moreSelect.addEventListener("change", () => {
+        state.tag = moreSelect.value;
+        apply(true);
+        revealResults();
+      });
+    if (yearSelect)
+      yearSelect.addEventListener("change", () => {
+        state.year = yearSelect.value;
+        apply(true);
+        revealResults();
+      });
+    if (sortSelect)
+      sortSelect.addEventListener("change", () => {
+        state.sort = sortSelect.value;
+        apply(true);
+      });
+    resets.forEach((r) =>
+      r.addEventListener("click", () => {
+        Object.assign(state, { q: "", tag: "", type: "", year: "" });
+        apply(true);
+        revealResults();
+      })
+    );
+
+    // initial state from the URL (post pages link here with ?tag=)
+    const params = new URLSearchParams(window.location.search);
+    state.q = (params.get("q") || "").trim().toLowerCase();
+    const tag = (params.get("tag") || "").toLowerCase();
+    state.tag = knownTags.has(tag) ? tag : "";
+    state.type = ["series", "article"].includes(params.get("type")) ? params.get("type") : "";
+    state.year = params.get("year") || "";
+    state.sort = params.get("sort") === "old" ? "old" : "new";
+    apply(false);
   }
 
   /* ---------------------------------------------------------------------------

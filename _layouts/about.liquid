@@ -3,13 +3,13 @@ layout: default
 ---
 {%- comment -%}
   Site override of al_folio_core's about layout. Same ingredients as al-folio
-  (bio, profile picture, CV from assets/json/resume.json, projects, selected
-  papers, latest posts, socials), arranged as numbered sections.
+  (bio, profile picture, projects, selected papers, latest posts, socials),
+  arranged as numbered sections, with a short `journey` in place of the full CV.
 {%- endcomment -%}
 {% assign section = 0 %}
 
 <section class="site-hero home-hero">
-  <p class="home-hero__role"><span class="home-hero__pulse" aria-hidden="true"></span>{{ page.subtitle | downcase }}</p>
+  <p class="home-hero__role"><span class="home-hero__pulse" aria-hidden="true"></span>{{ page.subtitle }}</p>
   <h1 class="site-display">{{ page.headline | default: site.first_name }}<span class="dot">.</span></h1>
   {% if page.intro %}<p class="site-lede">{{ page.intro }}</p>{% endif %}
   <div class="site-actions">
@@ -30,7 +30,9 @@ layout: default
     {% if page.profile.image %}
       <div class="home-portrait">
         {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
-        {% include figure.liquid loading="eager" path=profile_image_path alt="Portrait of Yasser Khalafaoui" sizes="(min-width: 768px) 24rem, 90vw" cache_bust=true %}
+        <div class="home-portrait__frame">
+          {% include figure.liquid loading="eager" path=profile_image_path alt="Portrait of Yasser Khalafaoui" sizes="(min-width: 768px) 20rem, 90vw" cache_bust=true %}
+        </div>
         {% if page.profile.caption %}<p class="home-portrait__caption">{{ page.profile.caption }}</p>{% endif %}
       </div>
     {% endif %}
@@ -81,94 +83,40 @@ layout: default
   </section>
 {% endif %}
 
-<!-- Experience and education, from assets/json/resume.json -->
-{% assign resume = site.data.resume %}
-{% if resume.work.size > 0 or resume.education.size > 0 %}
+<!-- Path: one card per chapter (front matter `journey`) instead of a full CV -->
+{% if page.journey %}
   {% assign section = section | plus: 1 %}
-  <section class="site-section" id="experience">
+  <section class="site-section" id="path">
     <div class="site-section__head">
       <span class="site-index">0{{ section }}</span>
-      <h2>Experience</h2>
+      <h2>The path so far</h2>
+      <p>{{ page.journey_note | default: 'Industry, research and teaching, one chapter each.' | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
     </div>
-
-    {% if resume.work.size > 0 %}
-      <div class="timeline-group">
-        <p class="timeline-group__title">// work</p>
-        <ol class="timeline">
-          {% for w in resume.work %}
-            <li>
-              <div class="timeline__when">
-                {{ w.startDate | date: '%b %Y' | downcase }} &ndash;
-                {% if w.endDate == 'Pres.' or w.endDate == '' or w.endDate == nil %}now{% else %}{{ w.endDate | date: '%b %Y' | downcase }}{% endif %}
-              </div>
-              <div>
-                <h3>{{ w.position }}</h3>
-                <div class="timeline__where">
-                  {% if w.url %}<a href="{{ w.url }}">@ {{ w.name | downcase }}</a>{% else %}@ {{ w.name | downcase }}{% endif %}
-                </div>
-                {% if w.summary %}<p>{{ w.summary }}</p>{% endif %}
-                {% if w.highlights.size > 0 and w.highlights != '' %}
-                  <ul>
-                    {% for h in w.highlights %}<li>{{ h }}</li>{% endfor %}
-                  </ul>
-                {% endif %}
-              </div>
-            </li>
-          {% endfor %}
-        </ol>
-      </div>
-    {% endif %}
-
-    {% if resume.education.size > 0 %}
-      <div class="timeline-group">
-        <p class="timeline-group__title">// education</p>
-        <ol class="timeline">
-          {% for e in resume.education %}
-            <li>
-              <div class="timeline__when">
-                {{ e.startDate | date: '%Y' }} &ndash; {{ e.endDate | date: '%Y' }}
-              </div>
-              <div>
-                <h3>{{ e.studyType }}</h3>
-                <div class="timeline__where">
-                  {% if e.url %}<a href="{{ e.url }}">@ {{ e.institution | downcase }}</a>{% else %}@ {{ e.institution | downcase }}{% endif %}
-                </div>
-                {% if e.summary %}<p>{{ e.summary }}</p>{% endif %}
-                {% if e.courses.size > 0 and e.courses != '' %}
-                  <ul>
-                    {% for c in e.courses %}<li>{{ c }}</li>{% endfor %}
-                  </ul>
-                {% endif %}
-              </div>
-            </li>
-          {% endfor %}
-        </ol>
-      </div>
-    {% endif %}
-
-    {% if resume.others.size > 0 %}
-      <div class="timeline-group">
-        <p class="timeline-group__title">// also</p>
-        <ol class="timeline">
-          {% for o in resume.others %}
-            <li>
-              <div class="timeline__when">{{ o.name | downcase }}</div>
-              <div>
-                <ul>
-                  {% for k in o.keywords %}<li>{{ k }}</li>{% endfor %}
-                </ul>
-              </div>
-            </li>
-          {% endfor %}
-        </ol>
-      </div>
-    {% endif %}
+    <ol class="path-grid">
+      {% for c in page.journey %}
+        <li class="path-card">
+          <div class="path-card__top">
+            <span class="path-card__n" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="path-card__label">{{ c.label }}</span>
+            {% if c.when %}<span class="path-card__when">{{ c.when }}</span>{% endif %}
+          </div>
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.text }}</p>
+          {% if c.tags or c.link %}
+            <div class="path-card__foot">
+              {% for t in c.tags %}<span class="site-chip">{{ t }}</span>{% endfor %}
+              {% if c.link %}<a class="site-link-arrow" href="{{ c.link }}">{{ c.link_label | default: 'more' }} &rarr;</a>{% endif %}
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
   </section>
 {% endif %}
 
 <!-- Projects -->
 {% assign projects = site.projects | sort: 'importance' %}
-{% if projects.size > 0 %}
+{% if page.projects != false and projects.size > 0 %}
   {% assign section = section | plus: 1 %}
   <section class="site-section" id="projects">
     <div class="site-section__head">

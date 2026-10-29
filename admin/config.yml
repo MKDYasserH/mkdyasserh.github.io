@@ -163,7 +163,21 @@ collections:
               - { name: label, label: Label, widget: string }
               - { name: title, label: Title, widget: string }
               - { name: text, label: Text, widget: text }
+          - { name: journey_note, label: Note under "The path so far", widget: string, required: false }
+          - name: journey
+            label: The path so far
+            widget: list
+            hint: One card per chapter (industry, thesis, teaching, education…).
+            fields:
+              - { name: label, label: Category, widget: string }
+              - { name: when, label: When, widget: string, required: false }
+              - { name: title, label: Title, widget: string }
+              - { name: text, label: Text, widget: text }
+              - { name: tags, label: Tags, widget: list, required: false }
+              - { name: link, label: Link, widget: string, required: false }
+              - { name: link_label, label: Link text, widget: string, required: false }
           - { name: selected_papers, label: Show selected publications, widget: boolean, default: true }
+          - { name: projects, label: Show selected projects, widget: boolean, default: false }
           - { name: latest_posts, label: Show latest writing, widget: boolean, default: true }
           - { name: social, widget: hidden, default: true }
           - { name: body, label: Bio, widget: markdown }
