@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
 
-Sitemap: https://mkdyasserh.github.io/sitemap.xml
+Sitemap: https://khalafaoui.com/sitemap.xml
