@@ -12,7 +12,7 @@ contact_note: >
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Yasser Khalafaoui, PhD. AI researcher working on LLM safety and hallucination mitigation, writing about generative models.
 footer_text: >
-  Built on <a href="https://github.com/alshedivat/al-folio">al-folio</a>. Hosted by <a href="https://pages.github.com/">GitHub Pages</a>.
+  while (curious) { learn(); build(); share(); }
 keywords: artificial intelligence, llm safety, stable diffusion, machine learning, multimodal learning, research
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon.svg # "YK." pixel monogram; /favicon.ico at the site root is the fallback for older browsers
