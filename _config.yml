@@ -316,6 +316,10 @@ defaults:
     values:
       sitemap: false
   - scope:
+      path: "google1876ca2cbe3f18cb.html" # keeps verifying the old Search Console property; not a page
+    values:
+      sitemap: false
+  - scope:
       path: ""
       type: posts
     values:
@@ -358,7 +362,9 @@ terser:
 
 jekyll-archives:
   posts:
-    enabled: [year, tags, categories] # enables year, tag and category archives (remove if you need to disable one of them).
+    # Off: the blog page filters by topic and year itself, so these archive pages were orphans
+    # that only padded the sitemap. Re-enable with e.g. [year, tags, categories].
+    enabled: []
     permalinks:
       year: "/blog/:year/"
       tags: "/blog/:type/:name/"
