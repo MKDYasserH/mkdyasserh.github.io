@@ -1,0 +1,271 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Does It Work? A Verifier for Coding Agents, the Results, and What We Learned | Yasser Khalafaoui </title> <meta name="author" content="Yasser Khalafaoui"> <meta name="description" content="Our decision model against the released CLM-8B: tricky questions, choosing between a coding agent's attempts, and a game played in real time. And the lessons, including the ones the benchmarks taught us about themselves."> <meta name="keywords" content="artificial intelligence, llm safety, stable diffusion, machine learning, multimodal learning, research"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 1200px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=Chakra+Petch:wght@500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/favicon.svg?v=0e5414263156c2b7fc43b6867bc9a35a"> <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=e2b3ea8b486e2dbf34e285aad5dbebd0"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://khalafaoui.com/blog/2026/does-it-work/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm site-nav fixed-top" role="navigation"> <div class="container"> <a class="site-brand" href="/">Yasser Khalafaoui<span class="site-brand__tag">AI researcher<span class="dot">.</span></span></a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">blog<span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/contact/">contact </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <article class="post article"> <header class="article-head"> <nav class="article-crumbs" aria-label="Breadcrumb"> <a href="/blog/">blog</a> <span aria-hidden="true">/</span> <a href="/blog/series/decision-models/">Decision Models (System One) from Scratch</a> <span aria-hidden="true">/</span> <span>part 05 of 05</span> </nav> <h1 class="article-title">Does It Work? A Verifier for Coding Agents, the Results, and What We Learned</h1> <p class="article-lede">Our decision model against the released CLM-8B: tricky questions, choosing between a coding agent's attempts, and a game played in real time. And the lessons, including the ones the benchmarks taught us about themselves.</p> <div class="article-meta"> <span>November 21, 2026</span> <span>17 min read</span> <span class="article-meta__tags"> <a class="site-chip" href="/blog/?tag=decision+models">#decision models</a> <a class="site-chip" href="/blog/?tag=evaluation">#evaluation</a> <a class="site-chip" href="/blog/?tag=verifiers">#verifiers</a> <a class="site-chip" href="/blog/?tag=best-of-n">#best-of-n</a> <a class="site-chip" href="/blog/?tag=benchmarks">#benchmarks</a> </span> </div> </header> <details class="series-box"> <summary> <span class="series-box__label">series</span> <span class="series-box__title">Decision Models (System One) from Scratch</span> <span class="series-box__progress" aria-label="Part 5 of 5"> <span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span> </span> <span class="series-box__toggle">all parts</span> </summary> <ol class="parts-list"> <li class="" data-part data-tags="decision models|system one|embeddings|contrastive learning" data-year="2026" data-search="what is a decision model (system one)? language models that think out loud are slow. a decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass. decision models system one embeddings contrastive learning"> <a href="/blog/2026/what-is-a-decision-model/"> <span class="parts-list__n">01</span> <span class="parts-list__title">What Is a Decision Model (System One)?</span> <span class="parts-list__time">13 min</span> </a> </li> <li class="" data-part data-tags="decision models|fine-tuning|lora|embeddings" data-year="2026" data-search="fine-tuning a frozen llm: why we train heads instead of lora our decision model never changes a single weight of its 8-billion-parameter language model. here is why training two small heads on frozen embeddings suits this job better than lora, and how a frozen model turns text into a vector. decision models fine-tuning lora embeddings"> <a href="/blog/2026/fine-tuning-a-frozen-llm/"> <span class="parts-list__n">02</span> <span class="parts-list__title">Fine-Tuning a Frozen LLM: Why We Train Heads Instead of LoRA</span> <span class="parts-list__time">19 min</span> </a> </li> <li class="" data-part data-tags="decision models|contrastive learning|infonce|hard negatives" data-year="2026" data-search="contrastive learning: infonce, temperature and hard negatives how two small heads learn to put a question next to its answer, using nothing but matching pairs: the in-batch similarity matrix, the infonce loss, the temperature, and the hard negatives that make the model sharp. decision models contrastive learning infonce hard negatives"> <a href="/blog/2026/contrastive-learning/"> <span class="parts-list__n">03</span> <span class="parts-list__title">Contrastive Learning: InfoNCE, Temperature and Hard Negatives</span> <span class="parts-list__time">17 min</span> </a> </li> <li class="" data-part data-tags="decision models|training|curriculum|preference learning|agents" data-year="2026" data-search="training a decision model: the data, and pre-, mid- and post-training where the training pairs come from, how a terabyte of vectors is fed to one gpu, the three training stages, and the general post-training recipe that worked best: terminal steps, agent environments, q&amp;a replay and answer preferences with critiques. decision models training curriculum preference learning agents"> <a href="/blog/2026/training-in-three-stages/"> <span class="parts-list__n">04</span> <span class="parts-list__title">Training a Decision Model: The Data, and Pre-, Mid- and Post-Training</span> <span class="parts-list__time">25 min</span> </a> </li> <li class="is-current" data-part data-tags="decision models|evaluation|verifiers|best-of-n|benchmarks" data-year="2026" data-search="does it work? a verifier for coding agents, the results, and what we learned our decision model against the released clm-8b: tricky questions, choosing between a coding agent's attempts, and a game played in real time. and the lessons, including the ones the benchmarks taught us about themselves. decision models evaluation verifiers best-of-n benchmarks"> <a href="/blog/2026/does-it-work/" aria-current="page"> <span class="parts-list__n">05</span> <span class="parts-list__title">Does It Work? A Verifier for Coding Agents, the Results, and What We Learned</span> <span class="parts-list__time">17 min</span> </a> </li> </ol> </details> <div class="article-grid"> <div class="article-body post-content" id="markdown-content"> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/tricky_qa_progress.mp4?v=ad903a16b3ce703d60f946a1869370d4" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> Accuracy on the tricky Q&amp;A test after each stage, from our training logs. Pre-training creeps up to about 52%, mid-training jumps past 65% in its first 42 steps, and post-training ends at 70.8%. The dashed lines are the CLM authors' published numbers. </div> <h1 id="introduction">Introduction</h1> <p>Over the last four posts we built a decision model from scratch: a frozen Qwen3-8B that turns any text into an embedding, two small heads that map states and options to vectors of dimension 512, a contrastive loss that teaches them to put each state next to its right option, and three stages of training. The result is a single checkpoint, our general post-training checkpoint. This post asks the only question that matters: does it work?</p> <p>We test it in three ways, each closer to real use than the last. The first is a held-out set of tricky questions, where every right answer comes with up to ten wrong answers designed to look right. The second is the job decision models were made for in coding: a coding agent attempts the same task several times, and the model must pick the attempt to keep. The third is a game played in real time, where the model has about 17 milliseconds per decision.</p> <p>In every test, we compare our checkpoint with the released CLM-8B<sup id="fnref:clm"><a href="#fn:clm" class="footnote" rel="footnote" role="doc-noteref">1</a></sup>, the model we set out to replicate, and whenever we could, we ran both ourselves on exactly the same data. Remember from part 4 that our checkpoint was chosen with a rule fixed in advance, on development data only. None of the numbers below played any part in choosing it.</p> <p>The last part of the post is about what we learned. Some lessons are about decision models, but the most useful ones are about the tests themselves.</p> <h1 id="test-1-tricky-questions">Test 1: tricky questions</h1> <p>The first test reuses the two chunks of question-and-answer pairs that were held out from training, the ones with hard negatives. For each of their 191,161 questions, the model sees the right answer and that question’s hard negatives, up to ten wrong answers generated to be close to it, and must rank the right one first. The score is the share of questions where it does, the <strong>top-1 accuracy</strong>. A model that guesses at random gets about 10%, since a question has about nine hard negatives on average.</p> <table> <thead> <tr> <th>Checkpoint</th> <th style="text-align: right">Ours</th> <th style="text-align: right">CLM-8B (published)</th> </tr> </thead> <tbody> <tr> <td>After pre-training</td> <td style="text-align: right">51.6%</td> <td style="text-align: right">52.1%</td> </tr> <tr> <td>After mid-training</td> <td style="text-align: right">68.1%</td> <td style="text-align: right">69.2%</td> </tr> <tr> <td>After post-training</td> <td style="text-align: right"><strong>70.8%</strong></td> <td style="text-align: right">68.5%</td> </tr> </tbody> </table> <p>Our run follows the published one closely through the first two stages, about half a point and one point below. Post-training is where the two diverge. CLM-8B’s post-training costs it a little accuracy on these questions, while ours gains almost three points. We also measured the released CLM-8B checkpoint ourselves on the same 191,161 rows and got 68.6%, in line with the published number, so the comparison is fair.</p> <p>The interesting part is the shape of the curve in the opening animation, which comes straight from our training logs. During pre-training, the heads become very good at the in-batch task they are trained on: by the end, they pick the right answer among 1,024 candidates from other questions about 83% of the time. Yet on the tricky test, accuracy creeps from 44% at step 4,000 to 52% at step 29,000. The heads learn to tell a question about planets from a question about cooking, but not Mercury from Venus.</p> <p>Mid-training changes this almost immediately. After only 42 steps, about four minutes on our GPU, tricky accuracy jumps from 51.6% to 65.2%, a gain that 25,000 steps of pre-training could not produce. The remaining 500 steps add three more points. This is the curriculum of part 4 at work: the broad geometry learned in pre-training is what lets the hard negatives teach so fast, and the hard negatives are where the precision comes from.</p> <p>Post-training then adds 2.7 points, even though none of its four sources is new Q&amp;A data. Part of it comes from the Q&amp;A replay, which keeps the hard negatives in the loss, and part from the other sources: choosing between close actions in one environment and ranking two answers to the same instruction are, after all, the same skill.</p> <h1 id="a-verifier-for-coding-agents">A verifier for coding agents</h1> <p>The second test is the one decision models were built for. A coding agent, given a task, writes code, runs commands and reads their output, step after step, until it believes it is done. Its success varies from one attempt to the next, so a common strategy is to let it make several attempts and keep the best one. This is called <strong>best-of-N</strong>. At deployment there are no hidden tests to tell which attempt is right, so the choice needs a <strong>verifier</strong>: a model that looks at each attempt and says how promising it is<sup id="fnref:cobbe2021"><a href="#fn:cobbe2021" class="footnote" rel="footnote" role="doc-noteref">2</a></sup>.</p> <p>A decision model is a natural verifier, because an agent’s attempt is exactly the kind of data it was trained on. Every step of the attempt is a decision: the state is everything that happened before the step, and the action is what the agent did. The model scores each step, and the score of the attempt is the average over its last 12 steps:</p> \[\text{score}(\text{attempt}) = \frac{1}{12}\sum_{t=T-11}^{T} s\,\mathbf{u}_t\cdot\mathbf{v}_t\] <p>where \(T\) is the number of steps in the attempt, \(\mathbf{u}_t\) and \(\mathbf{v}_t\) are the state and action vectors of step \(t\) produced by the two heads, and \(s\) is the scale. Each term is the familiar score of part 1, how well the action fits its state. The attempt with the highest score is kept. Scoring every step rather than only the final answer is the idea behind <strong>process reward models</strong><sup id="fnref:lightman2023"><a href="#fn:lightman2023" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>, and the last 12 steps are where an attempt either converges on a fix or goes in circles.</p> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/best_of_four.mp4?v=5e1373c9de3bd47b4e441ffb8c069d85" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> Best-of-four verification. Every step of every attempt gets a score, the last 12 are averaged, and the attempt with the highest average is kept. Only then do the task's tests say whether it passed. The scores are illustrative. </div> <h2 id="the-deepswe-benchmark">The DeepSWE benchmark</h2> <p>The CLM authors released a benchmark for this, which they call DeepSWE: 113 coding tasks, each attempted several times by a coding agent, with every attempt marked as passing or failing by the task’s tests, and all the steps already embedded with Qwen3-8B. The tasks are split into 75 for training and 38 held out, and on each held-out task the verifier picks one of up to four attempts. A task counts as <strong>resolved</strong> if the picked attempt passed.</p> <p>The protocol also adapts the model to this kind of data before testing. Starting from the checkpoint being tested, a short fine-tuning run trains the heads contrastively on the steps of the <strong>passing</strong> attempts of the training tasks, 22,576 steps from 66 tasks, with the authors’ own scripts and settings, which we ran unchanged. A model trained on what successful attempts look like tends to give lower scores to the steps of failing ones, which repeat themselves, revert changes or drift away from the task. The fine-tuning run depends on a random seed, so the whole procedure is repeated with five seeds and the results are averaged.</p> <h2 id="intuition">Intuition</h2> <p>Think of a coach who has to bet on one of four runners after watching only the last lap of each. He has never seen this race before, but he has watched thousands of good runners finish. A runner who finishes like those, steady and in control, is a better bet than one who is weaving and slowing down. The coach does not know who will win, and sometimes the steady runner falls on the last step. But averaged over many races, betting on the finish that looks most like a winner’s beats betting at random.</p> <h2 id="results-read-the-ceiling-first">Results: read the ceiling first</h2> <p>Before looking at any score, look at what the test allows. Of the 38 held-out tasks, 21 are resolved by <strong>every</strong> attempt, and 4 by <strong>none</strong>. On those 25 tasks, the verifier’s choice cannot change anything. Only the 13 remaining tasks have both passing and failing attempts, so every verifier, good or bad, lands between 21 and 34 resolved tasks. Picking an attempt at random resolves 28 on average, and a perfect verifier would resolve 34.</p> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/deep_swe_ceiling.mp4?v=006c5286c57d22d4972d50fd5f8e8d45" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> The 38 held-out DeepSWE tasks. Only the 13 grey ones can tell verifiers apart, so every result lies between 21 and 34, with a random pick at 28. </div> <table> <thead> <tr> <th>Verifier</th> <th>Seeds 1234, 1, 2, 3, 4</th> <th style="text-align: right">Mean resolved, out of 38</th> </tr> </thead> <tbody> <tr> <td>Random pick</td> <td> </td> <td style="text-align: right">28</td> </tr> <tr> <td>Ours, after the verifier fine-tuning</td> <td>29, 30, 32, 30, 31</td> <td style="text-align: right">30.4</td> </tr> <tr> <td>CLM-8B, after the verifier fine-tuning</td> <td>31, 32, 30, 31, 31</td> <td style="text-align: right"><strong>31.0</strong></td> </tr> <tr> <td>Perfect pick</td> <td> </td> <td style="text-align: right">34</td> </tr> </tbody> </table> <p>CLM-8B comes out ahead by 0.6 tasks on average. That is less than the spread between seeds of the same model, which goes from 29 to 32 for ours, and it is played out on 13 tasks, where one task is worth more than two and a half percentage points. The honest summary is a near tie, with a slight edge to CLM-8B. Measured from a random pick, ours closes 40% of the gap to a perfect verifier, and CLM-8B half of it.</p> <p>We also tried both checkpoints <strong>directly</strong>, without the verifier fine-tuning: both resolve 27 tasks, one fewer than a random pick. On this benchmark, a general decision model is not a useful verifier out of the box. It needs the short adaptation to what passing attempts look like, which is cheap, since everything is already embedded.</p> <h2 id="a-second-coding-test">A second coding test</h2> <p>DeepSWE is small, so we added a test from outside the CLM release: 95 held-out issues from SWE-bench Verified<sup id="fnref:jimenez2024"><a href="#fn:jimenez2024" class="footnote" rel="footnote" role="doc-noteref">4</a></sup>, a standard benchmark of real GitHub issues, each with up to 15 attempts by coding agents, taken from a public dataset of embedded attempts. The metric is the <strong>expected best-of-four success</strong>: for every possible group of four attempts on an issue, the verifier picks one, and we average whether it passed. Here both checkpoints are used directly, without any fine-tuning.</p> <table> <thead> <tr> <th>Verifier</th> <th style="text-align: right">Expected best-of-four success</th> </tr> </thead> <tbody> <tr> <td>Random pick</td> <td style="text-align: right">70.7%</td> </tr> <tr> <td>CLM-8B</td> <td style="text-align: right">69.4%</td> </tr> <tr> <td>Ours</td> <td style="text-align: right"><strong>71.3%</strong></td> </tr> <tr> <td>Perfect pick</td> <td style="text-align: right">83.3%</td> </tr> </tbody> </table> <p>Ours is ahead of CLM-8B by about two points, but look at the random pick again: ours is only 0.6 points above it, and CLM-8B is below it. Without adaptation, neither model is a strong verifier for these attempts. As we will see in the lessons, a head trained on this kind of data does much better.</p> <h1 id="test-3-a-game-in-real-time">Test 3: a game in real time</h1> <p>The CLM release comes with a demonstration that puts decision speed to the test: a side-scrolling runner game, where a dinosaur has to jump over or duck under obstacles. Each course lasts 60 seconds, and the model makes about 3,300 decisions per course, one every 18 milliseconds or so. Our checkpoint answered in about 17 ms per decision (median), on par with CLM-8B, which is the speed part 1 promised.</p> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/game_decision.mp4?v=010e6fb04473b2bc99e2518d93a19269" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> One decision in the game. The state describes what is ahead, and each option comes with the planner's note about it. If the model proposes an unsafe action, the shield replaces it with the most probable safe one. The descriptions and probabilities are illustrative. </div> <p>At each decision, the game builds a state, such as “Dino runner game. Cactus ahead, 120 px away.”, and three options, jump, duck and run. A built-in <strong>planner</strong> works out which actions are safe and which is best, and its notes are written into each option’s text: “Safe. … Best.” for its preferred action, “Unsafe. … Collision.” for the dangerous ones. The model picks the option with the highest probability. A <strong>shield</strong> then checks the choice: if the model proposed an unsafe action, it executes the most probable safe action instead.</p> <p>Two numbers describe a run. <strong>Planner agreement</strong> is the share of decisions where the model’s proposal has the same effect as the planner’s choice, measured before the shield acts. <strong>Survival</strong> counts the courses finished without a single crash. We ran both checkpoints on five fresh courses, with the shield on:</p> <table> <thead> <tr> <th>Checkpoint</th> <th style="text-align: right">Planner agreement</th> <th style="text-align: right">Courses survived</th> <th style="text-align: right">Shield interventions</th> </tr> </thead> <tbody> <tr> <td>CLM-8B</td> <td style="text-align: right"><strong>66.9%</strong></td> <td style="text-align: right">5 / 5</td> <td style="text-align: right">4,956</td> </tr> <tr> <td>Ours</td> <td style="text-align: right">36.1%</td> <td style="text-align: right">5 / 5</td> <td style="text-align: right"><strong>3,083</strong></td> </tr> </tbody> </table> <p>CLM-8B follows the planner far more often. Ours agrees with it only about a third of the time, yet proposed an unsafe action less often: the shield had to step in 3,083 times for ours, against 4,956 for CLM-8B. In other words, our model often picks a <strong>safe</strong> action that is not the planner’s favourite, like running instead of jumping when both are fine. Both survive every course with the shield. Without it, our checkpoint is not a good player: on the five original courses of the demonstration, it crashed 45 times and finished none without a crash.</p> <p>This game is the test where CLM-8B is clearly better, and also the one where the numbers need the most care, as the lessons will show.</p> <h1 id="the-full-picture">The full picture</h1> <table> <thead> <tr> <th>Test</th> <th style="text-align: right">Ours</th> <th style="text-align: right">CLM-8B</th> <th style="text-align: right">Random</th> <th style="text-align: right">Perfect</th> </tr> </thead> <tbody> <tr> <td>Tricky Q&amp;A, top-1 accuracy</td> <td style="text-align: right"><strong>70.8%</strong></td> <td style="text-align: right">68.6%</td> <td style="text-align: right">≈ 10%</td> <td style="text-align: right">100%</td> </tr> <tr> <td>DeepSWE, resolved out of 38, with verifier fine-tuning</td> <td style="text-align: right">30.4</td> <td style="text-align: right"><strong>31.0</strong></td> <td style="text-align: right">28</td> <td style="text-align: right">34</td> </tr> <tr> <td>DeepSWE, resolved out of 38, used directly</td> <td style="text-align: right">27</td> <td style="text-align: right">27</td> <td style="text-align: right">28</td> <td style="text-align: right">34</td> </tr> <tr> <td>SWE-bench Verified, expected best of four</td> <td style="text-align: right"><strong>71.3%</strong></td> <td style="text-align: right">69.4%</td> <td style="text-align: right">70.7%</td> <td style="text-align: right">83.3%</td> </tr> <tr> <td>Game, planner agreement with the shield on</td> <td style="text-align: right">36.1%</td> <td style="text-align: right"><strong>66.9%</strong></td> <td style="text-align: right"> </td> <td style="text-align: right"> </td> </tr> <tr> <td>Game, courses survived with the shield on</td> <td style="text-align: right">5 / 5</td> <td style="text-align: right">5 / 5</td> <td style="text-align: right"> </td> <td style="text-align: right"> </td> </tr> </tbody> </table> <p>Our decision model, built from public data and recipes we reconstructed ourselves, matches CLM-8B on the coding benchmark it was designed for, beats it on tricky questions and on the external coding test, and falls behind on following the game’s planner. The whole general post-training study, including encoding its new data and running all these evaluations, cost about \$2.85 of GPU time.</p> <h1 id="what-we-learned">What we learned</h1> <h2 id="know-the-floor-and-the-ceiling">Know the floor and the ceiling</h2> <p>The most important number in any benchmark table is often the one that is missing: what a random choice would score. On DeepSWE, 25 of the 38 tasks are decided before the verifier even looks at them, a random pick already resolves 28, and the difference between the two models is a fraction of a task. On SWE-bench, a random pick beats one of the two models. Without those two reference points, “31.0 against 30.4” or “71.3% against 69.4%” look like results. With them, they look like what they are: small differences on a narrow margin.</p> <h2 id="a-benchmark-can-contain-its-own-answer">A benchmark can contain its own answer</h2> <p>The game’s options carry the planner’s notes, and the planner’s favourite option literally ends with the word “Best.”. A model that learns to look for that word scores perfectly on planner agreement without understanding anything about the game.</p> <p>We checked this. We trained a specialist head on 8,640 planner-labeled decisions from other courses, adjusting only the action head. It reached <strong>100%</strong> planner agreement on fresh courses, against 66.9% for CLM-8B, and the shield had to intervene only 206 times. It looks like a triumph. But with the shield off, it crashed on every one of the five courses. It had learned to read the label, not to play. Planner agreement on this prompt measures how well a model follows a hint written in its options, which is worth knowing, but is not the same as making good decisions.</p> <h2 id="specialists-win-their-benchmark-and-lose-the-others">Specialists win their benchmark and lose the others</h2> <p>We also trained a coding specialist: starting from an earlier post-trained head, it learned to prefer passing attempts over failing ones on 318 SWE-bench issues, kept separate from the 95 test issues. On the SWE-bench test, it reached 74.0% expected best-of-four success, by far the best result, almost three points above our general checkpoint. On DeepSWE, it fell to 28.8, below every other head we tested. The gain did not transfer from one set of coding tasks to another. This is why the checkpoint we report is the general one, chosen with no benchmark in sight: it is never the best at one test, but it holds up on all of them.</p> <h2 id="hard-negatives-are-where-the-precision-comes-from">Hard negatives are where the precision comes from</h2> <p>The opening animation is the clearest result of the whole project. Pre-training on 62 million pairs taught the heads to find the right answer among 1,024 random ones, but left them guessing between close alternatives. Forty-two steps on hard negatives did more for that than the last 25,000 steps of pre-training. And keeping the hard negatives in the replay during post-training is what let our final checkpoint keep improving on them, where CLM-8B’s post-training lost a little.</p> <h2 id="fix-the-selection-rule-before-looking">Fix the selection rule before looking</h2> <p>With dozens of candidate checkpoints and half a dozen benchmarks, it is easy to fool oneself by keeping whichever checkpoint looks best on the tests. We fixed the selection rule of part 4, on development data only, before running any benchmark, and stuck to it even where a different choice would have looked better on one test. The results above are less flattering than a hand-picked table would be, but they are the ones a new task would likely see.</p> <h2 id="frozen-embeddings-make-experiments-cheap">Frozen embeddings make experiments cheap</h2> <p>Because the language model is frozen and every text is embedded once, the cost of an idea is the cost of training two small heads. Our pre-training run, 30,000 steps on 62 million pairs, took two hours on one GPU. Mid-training reached its best checkpoint in 21 minutes. Each post-training recipe took minutes and cost cents. That is what made it possible to compare recipes side by side, on identical batches, and to throw away the ones that did not work.</p> <h2 id="what-we-would-do-next">What we would do next</h2> <p>The weak point of our checkpoint is the gap between “plausible” and “best”: it proposes dangerous actions less often than CLM-8B, but it often disagrees with the planner on which safe action is better. More preference data, where two good options must still be ranked, is the most direct fix. On the coding side, the verifier only ever learns from passing attempts. Training it on pairs of passing and failing attempts, as the coding specialist did, but on a broader mix of tasks, should keep the specialist’s gains without its brittleness. And for evaluation, we would want coding benchmarks with many more mixed tasks, and game prompts that describe the situation without labelling the answer.</p> <h1 id="conclusion">Conclusion</h1> <p>A decision model is a simple idea: let a frozen language model read, let two small heads compare, and replace generation with a cosine. Over this series we built one from scratch: we embedded once, trained with a contrastive loss, followed a three-stage curriculum from 62 million questions to agents and preferences, and tested the result against the model we set out to replicate. It answers in 17 milliseconds, it can be retrained for cents, and on the tests that measure what it was trained for, it holds its own against CLM-8B.</p> <p>The code is in the <a href="https://github.com/MKDYasserH/system-one-model" rel="external nofollow noopener" target="_blank">repository</a>. If you want to see a decision model built step by step on video, the Vizuara AI <a href="https://www.youtube.com/watch?v=vEpkc44bHVQ&amp;t=5549s" rel="external nofollow noopener" target="_blank">walkthrough</a> is a great companion to this series. Thank you for reading.</p> <h1 id="references">References</h1> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:clm"> <p>J. Kwok, H. Kang, T. Suresh, J. Saad-Falcon, M. Pavone, C. Ré and A. Mirhoseini. <em>CLM-8B</em> (<a href="https://contrastive-lm.notion.site" rel="external nofollow noopener" target="_blank">project page</a>) and its <a href="https://github.com/Contrastive-LM/CLM" rel="external nofollow noopener" target="_blank">code</a>, including the DeepSWE benchmark and the game. <a href="#fnref:clm" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:cobbe2021"> <p>K. Cobbe et al. <em>Training verifiers to solve math word problems.</em> <a href="https://arxiv.org/abs/2110.14168" rel="external nofollow noopener" target="_blank">arXiv:2110.14168</a>, 2021. <a href="#fnref:cobbe2021" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:lightman2023"> <p>H. Lightman et al. <em>Let’s verify step by step.</em> International Conference on Learning Representations, 2024. <a href="https://arxiv.org/abs/2305.20050" rel="external nofollow noopener" target="_blank">arXiv:2305.20050</a> <a href="#fnref:lightman2023" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:jimenez2024"> <p>C. E. Jimenez et al. <em>SWE-bench: can language models resolve real-world GitHub issues?</em> International Conference on Learning Representations, 2024. <a href="https://arxiv.org/abs/2310.06770" rel="external nofollow noopener" target="_blank">arXiv:2310.06770</a> <a href="#fnref:jimenez2024" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </div> <aside class="article-toc" aria-label="On this page"> <div class="article-toc__inner" hidden> <p class="article-toc__label">on this page</p> <nav id="article-toc"></nav> </div> </aside> </div> <nav class="article-pager" aria-label="Series navigation"> <a class="article-pager__prev" href="/blog/2026/training-in-three-stages/"> <span class="article-pager__label">← part 04</span> <span class="article-pager__title">Training a Decision Model: The Data, and Pre-, Mid- and Post-Training</span> </a> </nav> <section class="article-comments" id="comments"> <div class="site-section__head"> <span class="site-index">//</span> <h2>Discussion</h2> <p>Questions, corrections and ideas are welcome. Comments use GitHub Discussions, so you'll need a GitHub account.</p> </div> <div id="giscus_thread" style="max-width: 1200px; margin: 0 auto;"> <br> <script>
+    (function setupGiscus() {
+      function determineGiscusTheme() {
+        var theme = localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme") || "system";
+if (theme === "dark") return "transparent_dark";
+if (theme === "light") return "light";
+var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+return prefersDark ? "transparent_dark" : "light";
+
+      }
+
+      var giscusTheme = determineGiscusTheme();
+      var attrs = {
+        src: "https://giscus.app/client.js",
+        "data-repo": "MKDYasserH/mkdyasserh.github.io",
+        "data-repo-id": "R_kgDOKtOPJw",
+        "data-category": "Announcements",
+        "data-category-id": "DIC_kwDOKtOPJ84DJ7CC",
+        "data-mapping": "pathname",
+        "data-strict": "1",
+        "data-reactions-enabled": "1",
+        "data-emit-metadata": "0",
+        "data-input-position": "bottom",
+        "data-theme": giscusTheme,
+        "data-lang": "en",
+        crossorigin: "anonymous",
+        async: true
+      };
+
+      var giscusScript = document.createElement("script");
+      Object.entries(attrs).forEach(function(entry) { giscusScript.setAttribute(entry[0], entry[1]); });
+      var host = document.getElementById("giscus_thread");
+      if (host) host.appendChild(giscusScript);
+    })();
+  </script> <noscript> Please enable JavaScript to view the <a href="http://giscus.app/?ref_noscript" rel="external nofollow noopener" target="_blank">comments powered by giscus.</a> </noscript> </div> </section> <section class="article-related"> <div class="site-section__head"> <span class="site-index">→</span> <h2>Keep reading</h2> </div> <ul class="post-rows"> <li class="post-row" data-filter-item data-type="series" data-tags="diffusion|unet|classifier-free guidance|clip" data-year="2025" data-date="1736683200" data-search="diffusion, classifier-free guidance, unet and clip putting it all together: diffusion models, classifier-free guidance, the unet architecture, and clip's role in stable diffusion. stable diffusion from scratch diffusion unet classifier-free guidance clip" data-kind="article"> <a href="/blog/2025/stable-diffusion/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Diffusion, Classifier-Free Guidance, UNet and CLIP</h3> <p>Putting it all together: diffusion models, classifier-free guidance, the UNet architecture, and CLIP's role in Stable Diffusion.</p> <span class="post-row__tags"> <span class="site-chip">20 min</span> <span class="site-chip">#diffusion</span><span class="site-chip">#unet</span><span class="site-chip">#classifier-free guidance</span><span class="site-chip">#clip</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> <li class="post-row" data-filter-item data-type="series" data-tags="autoencoders|vae" data-year="2025" data-date="1736679600" data-search="variational auto-encoders why do we need an auto-encoder for stable diffusion? from plain autoencoders to the reparameterization trick. stable diffusion from scratch autoencoders vae" data-kind="article"> <a href="/blog/2025/vae/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Variational Auto-Encoders</h3> <p>Why do we need an auto-encoder for Stable Diffusion? From plain autoencoders to the reparameterization trick.</p> <span class="post-row__tags"> <span class="site-chip">15 min</span> <span class="site-chip">#autoencoders</span><span class="site-chip">#vae</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> <li class="post-row" data-filter-item data-type="series" data-tags="attention|transformers" data-year="2025" data-date="1736676000" data-search="attention mechanisms explained understand the role of the attention mechanism in the architecture of stable diffusion models. stable diffusion from scratch attention transformers" data-kind="article"> <a href="/blog/2025/attention/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Attention Mechanisms Explained</h3> <p>Understand the role of the attention mechanism in the architecture of Stable Diffusion models.</p> <span class="post-row__tags"> <span class="site-chip">17 min</span> <span class="site-chip">#attention</span><span class="site-chip">#transformers</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> </ul> </section> </article> </div> <footer class="site-footer" role="contentinfo"> <div class="container"> <p class="site-eyebrow">have an idea, a question, or a role in mind?</p> <a class="site-footer__big" href="/contact/"> Let's talk<span class="dot">.</span> <span class="site-footer__arrow" aria-hidden="true">→</span> </a> <div class="site-footer__row"> <span class="mono">© 2026 Yasser Khalafaoui</span> <div class="site-social"> <a href="https://github.com/MKDYasserH" title="Github username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-github"></i></a> <a href="https://www.linkedin.com/in/yasser-khalafaoui" title="Linkedin username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-linkedin"></i></a> <a href="https://twitter.com/YasserMoui" title="X username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-x-twitter"></i></a> <a href="/feed.xml" title="Rss icon"><i class="fa-solid fa-square-rss"></i></a> </div> <span class="mono">while (curious) { learn(); build(); share(); } </span> </div> </div> </footer> <script defer src="/assets/js/site.js?v=865582021d765818ccacfbed58f8f128"></script> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJB042V4LQ"></script> <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-QJB042V4LQ");
+</script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-blog",
+          title: "blog",
+          description: "Practical AI, explained three ways: the intuition, the understanding behind it, and an implementation you can run. Multi-part series plus standalone articles.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "nav-contact",
+          title: "contact",
+          description: "Get in touch about research collaborations, speaking, consulting, or anything AI.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/contact/";
+          },
+        },{id: "post-does-it-work-a-verifier-for-coding-agents-the-results-and-what-we-learned",
+        
+          title: "Does It Work? A Verifier for Coding Agents, the Results, and What We...",
+        
+        description: "Our decision model against the released CLM-8B: tricky questions, choosing between a coding agent&#39;s attempts, and a game played in real time. And the lessons, including the ones the benchmarks taught us about themselves.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/does-it-work/";
+          
+        },
+      },{id: "post-training-a-decision-model-the-data-and-pre-mid-and-post-training",
+        
+          title: "Training a Decision Model: The Data, and Pre-, Mid- and Post-Training",
+        
+        description: "Where the training pairs come from, how a terabyte of vectors is fed to one GPU, the three training stages, and the general post-training recipe that worked best: terminal steps, agent environments, Q&amp;A replay and answer preferences with critiques.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/training-in-three-stages/";
+          
+        },
+      },{id: "post-contrastive-learning-infonce-temperature-and-hard-negatives",
+        
+          title: "Contrastive Learning: InfoNCE, Temperature and Hard Negatives",
+        
+        description: "How two small heads learn to put a question next to its answer, using nothing but matching pairs: the in-batch similarity matrix, the InfoNCE loss, the temperature, and the hard negatives that make the model sharp.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/contrastive-learning/";
+          
+        },
+      },{id: "post-fine-tuning-a-frozen-llm-why-we-train-heads-instead-of-lora",
+        
+          title: "Fine-Tuning a Frozen LLM: Why We Train Heads Instead of LoRA",
+        
+        description: "Our decision model never changes a single weight of its 8-billion-parameter language model. Here is why training two small heads on frozen embeddings suits this job better than LoRA, and how a frozen model turns text into a vector.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/fine-tuning-a-frozen-llm/";
+          
+        },
+      },{id: "post-what-is-a-decision-model-system-one",
+        
+          title: "What Is a Decision Model (System One)?",
+        
+        description: "Language models that think out loud are slow. A decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/what-is-a-decision-model/";
+          
+        },
+      },{id: "post-diffusion-classifier-free-guidance-unet-and-clip",
+        
+          title: "Diffusion, Classifier-Free Guidance, UNet and CLIP",
+        
+        description: "Putting it all together: diffusion models, classifier-free guidance, the UNet architecture, and CLIP&#39;s role in Stable Diffusion.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/stable-diffusion/";
+          
+        },
+      },{id: "post-variational-auto-encoders",
+        
+          title: "Variational Auto-Encoders",
+        
+        description: "Why do we need an auto-encoder for Stable Diffusion? From plain autoencoders to the reparameterization trick.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/vae/";
+          
+        },
+      },{id: "post-attention-mechanisms-explained",
+        
+          title: "Attention Mechanisms Explained",
+        
+        description: "Understand the role of the attention mechanism in the architecture of Stable Diffusion models.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/attention/";
+          
+        },
+      },{id: "post-convolution-layers-explained",
+        
+          title: "Convolution Layers Explained",
+        
+        description: "Understand the role of convolutional layers in the architecture of Stable Diffusion models.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/convolution/";
+          
+        },
+      },{id: "post-introduction-and-prerequisites",
+        
+          title: "Introduction and Prerequisites",
+        
+        description: "A warm-up: why Stable Diffusion is worth taking apart, what the series covers, and how to follow along.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/intro/";
+          
+        },
+      },{id: "projects-mentorai",
+          title: 'MentorAI',
+          description: "AI Mentor for High School Students",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_project/";
+            },},{id: "projects-multi-modal-emotion-recognition",
+          title: 'Multi-modal Emotion Recognition',
+          description: "Recognition of human emotions through multiple modalities",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_project/";
+            },},{id: "projects-news-aggregator",
+          title: 'News Aggregator',
+          description: "Multi-source news summarization",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_project/";
+            },},{id: "series-decision-models-system-one-from-scratch",
+          title: 'Decision Models (System One) from Scratch',
+          description: "A fast, intuitive model that scores options instead of writing text. Frozen Qwen3-8B embeddings, two small heads, contrastive learning and a three-stage training recipe, explained with the maths and rebuilt end to end.",
+          section: "Series",handler: () => {
+              window.location.href = "/blog/series/decision-models/";
+            },},{id: "series-stable-diffusion-from-scratch",
+          title: 'Stable Diffusion from Scratch',
+          description: "Convolutions, attention, VAEs, diffusion, UNet and CLIP, explained with the maths and implemented in TensorFlow. Every part builds on the one before it.",
+          section: "Series",handler: () => {
+              window.location.href = "/blog/series/stable-diffusion/";
+            },},{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/MKDYasserH", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/yasser-khalafaoui", "_blank");
+        },
+      },{
+        id: 'social-x',
+        title: 'X',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://twitter.com/YasserMoui", "_blank");
+        },
+      },{
+        id: 'social-rss',
+        title: 'RSS Feed',
+        section: 'Socials',
+        handler: () => {
+          window.open("/feed.xml", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

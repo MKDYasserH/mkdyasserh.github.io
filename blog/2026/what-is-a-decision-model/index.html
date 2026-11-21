@@ -1,0 +1,296 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> What Is a Decision Model (System One)? | Yasser Khalafaoui </title> <meta name="author" content="Yasser Khalafaoui"> <meta name="description" content="Language models that think out loud are slow. A decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass."> <meta name="keywords" content="artificial intelligence, llm safety, stable diffusion, machine learning, multimodal learning, research"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 1200px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=Chakra+Petch:wght@500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/favicon.svg?v=0e5414263156c2b7fc43b6867bc9a35a"> <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=e2b3ea8b486e2dbf34e285aad5dbebd0"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://khalafaoui.com/blog/2026/what-is-a-decision-model/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm site-nav fixed-top" role="navigation"> <div class="container"> <a class="site-brand" href="/">Yasser Khalafaoui<span class="site-brand__tag">AI researcher<span class="dot">.</span></span></a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">blog<span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/contact/">contact </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <article class="post article"> <header class="article-head"> <nav class="article-crumbs" aria-label="Breadcrumb"> <a href="/blog/">blog</a> <span aria-hidden="true">/</span> <a href="/blog/series/decision-models/">Decision Models (System One) from Scratch</a> <span aria-hidden="true">/</span> <span>part 01 of 05</span> </nav> <h1 class="article-title">What Is a Decision Model (System One)?</h1> <p class="article-lede">Language models that think out loud are slow. A decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass.</p> <div class="article-meta"> <span>November 21, 2026</span> <span>13 min read</span> <span class="article-meta__tags"> <a class="site-chip" href="/blog/?tag=decision+models">#decision models</a> <a class="site-chip" href="/blog/?tag=system+one">#system one</a> <a class="site-chip" href="/blog/?tag=embeddings">#embeddings</a> <a class="site-chip" href="/blog/?tag=contrastive+learning">#contrastive learning</a> </span> </div> </header> <details class="series-box" open> <summary> <span class="series-box__label">series</span> <span class="series-box__title">Decision Models (System One) from Scratch</span> <span class="series-box__progress" aria-label="Part 1 of 5"> <span class="is-done"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span> </span> <span class="series-box__toggle">all parts</span> </summary> <ol class="parts-list"> <li class="is-current" data-part data-tags="decision models|system one|embeddings|contrastive learning" data-year="2026" data-search="what is a decision model (system one)? language models that think out loud are slow. a decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass. decision models system one embeddings contrastive learning"> <a href="/blog/2026/what-is-a-decision-model/" aria-current="page"> <span class="parts-list__n">01</span> <span class="parts-list__title">What Is a Decision Model (System One)?</span> <span class="parts-list__time">13 min</span> </a> </li> <li class="" data-part data-tags="decision models|fine-tuning|lora|embeddings" data-year="2026" data-search="fine-tuning a frozen llm: why we train heads instead of lora our decision model never changes a single weight of its 8-billion-parameter language model. here is why training two small heads on frozen embeddings suits this job better than lora, and how a frozen model turns text into a vector. decision models fine-tuning lora embeddings"> <a href="/blog/2026/fine-tuning-a-frozen-llm/"> <span class="parts-list__n">02</span> <span class="parts-list__title">Fine-Tuning a Frozen LLM: Why We Train Heads Instead of LoRA</span> <span class="parts-list__time">19 min</span> </a> </li> <li class="" data-part data-tags="decision models|contrastive learning|infonce|hard negatives" data-year="2026" data-search="contrastive learning: infonce, temperature and hard negatives how two small heads learn to put a question next to its answer, using nothing but matching pairs: the in-batch similarity matrix, the infonce loss, the temperature, and the hard negatives that make the model sharp. decision models contrastive learning infonce hard negatives"> <a href="/blog/2026/contrastive-learning/"> <span class="parts-list__n">03</span> <span class="parts-list__title">Contrastive Learning: InfoNCE, Temperature and Hard Negatives</span> <span class="parts-list__time">18 min</span> </a> </li> <li class="" data-part data-tags="decision models|training|curriculum|preference learning|agents" data-year="2026" data-search="training a decision model: the data, and pre-, mid- and post-training where the training pairs come from, how a terabyte of vectors is fed to one gpu, the three training stages, and the general post-training recipe that worked best: terminal steps, agent environments, q&amp;a replay and answer preferences with critiques. decision models training curriculum preference learning agents"> <a href="/blog/2026/training-in-three-stages/"> <span class="parts-list__n">04</span> <span class="parts-list__title">Training a Decision Model: The Data, and Pre-, Mid- and Post-Training</span> <span class="parts-list__time">26 min</span> </a> </li> <li class="" data-part data-tags="decision models|evaluation|verifiers|best-of-n|benchmarks" data-year="2026" data-search="does it work? a verifier for coding agents, the results, and what we learned our decision model against the released clm-8b: tricky questions, choosing between a coding agent's attempts, and a game played in real time. and the lessons, including the ones the benchmarks taught us about themselves. decision models evaluation verifiers best-of-n benchmarks"> <a href="/blog/2026/does-it-work/"> <span class="parts-list__n">05</span> <span class="parts-list__title">Does It Work? A Verifier for Coding Agents, the Results, and What We Learned</span> <span class="parts-list__time">17 min</span> </a> </li> </ol> </details> <div class="article-grid"> <div class="article-body post-content" id="markdown-content"> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/system_one_overview.mp4?v=fc9c95e2b1c589ab72e7361c08517166" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> A decision model in one picture: a question and three possible answers go through a frozen language model and two small trained heads, land on a circle, and become probabilities. </div> <h1 id="welcome">Welcome</h1> <p>Welcome to a new series! In the <a href="/blog/series/stable-diffusion/">Stable Diffusion series</a>, we took apart a model that <em>creates</em>. This time we build a model that <em>decides</em>.</p> <p>Over the last two years, the big story in language models has been reasoning: models that write out a chain of thought before answering, and get better the longer they think. That works remarkably well for hard problems. But a lot of the decisions an AI system makes are not hard problems. An agent choosing its next shell command, a verifier picking the best of four attempts at a bug fix, a game character deciding whether to jump: these are choices between a handful of options, made over and over, often under a time limit. Writing an essay before each one is wasteful.</p> <p>This series is about a different kind of model, a <strong>decision model</strong>, that looks at a situation and its options and simply <em>knows</em> which one fits, in a single pass. We will rebuild one from scratch: the data, the maths, the training, and the results, including the experiments that did not work.</p> <h1 id="two-ways-of-thinking">Two ways of thinking</h1> <p>In <em>Thinking, Fast and Slow</em><sup id="fnref:kahneman2011"><a href="#fn:kahneman2011" class="footnote" rel="footnote" role="doc-noteref">1</a></sup>, Daniel Kahneman describes two modes of thought. <strong>System 1</strong> is fast, automatic and effortless: you recognize a friend’s face, read the anger in a voice, or know that 2 + 2 = 4 without doing anything. <strong>System 2</strong> is slow, deliberate and effortful: you multiply 17 × 24 in your head, or check a contract clause by clause.</p> <p>Here is the puzzle Kahneman uses to show the difference:</p> <blockquote> <p>A bat and a ball cost \$1.10 in total. The bat costs \$1.00 more than the ball. How much does the ball cost?</p> </blockquote> <p>An answer pops into your head immediately: 10 cents. That is System 1. It is fast, confident, and wrong: if the ball cost 10 cents, the bat would cost \$1.10 and the total \$1.20. Slowing down and writing the equation, \(b + (b + 1) = 1.10\), gives 5 cents. That is System 2.</p> <p>The lesson is not that System 1 is bad. You use it for almost everything you do, and it is right most of the time. The lesson is that the two systems have different jobs: one is cheap and fast and good enough for most decisions, the other is expensive and careful and saved for the cases that need it.</p> <p>Language models that write out their reasoning are System 2. Each word of the reasoning is one more full pass through billions of parameters. A decision model is the other half, which is why it is also called a <strong>System One model</strong>: it looks at a situation and its options and answers in one step.</p> <div class="row mt-3"> <div class="col-sm mt-3 mt-md-0"> <figure> <video src="/assets/video/system_one/generate_vs_score.mp4?v=955015b9d785dda2d66b12a1a8b0500d" class="img-fluid rounded z-depth-1" width="auto" height="auto" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <div class="caption"> Generating versus scoring. The generating model has to write its answer one token at a time. The decision model reads the question and scores the three options at once. </div> <h1 id="what-a-decision-model-does">What a decision model does</h1> <p>A decision model takes two kinds of input. The first is a <strong>state</strong>: the situation the decision is about. It can be a question with a supporting document, the conversation an agent has had so far, or the current screen of a game. The second is a set of <strong>options</strong>: the possible answers or actions, such as three candidate answers to the question, the shell commands an agent could run next, or the moves available in the game.</p> <p>For each option, the model returns a probability, and it never writes any text. The options have to be given to it: a decision model chooses, it does not invent.</p> <p>The idea was made popular by <a href="https://typesafe.ai" rel="external nofollow noopener" target="_blank">Jev</a>, a closed-source decision model from TypeSafe. Researchers at Stanford and NVIDIA then released an open one, <strong>CLM-8B</strong><sup id="fnref:clm2026"><a href="#fn:clm2026" class="footnote" rel="footnote" role="doc-noteref">2</a></sup>, with its weights and serving code but without the code that trained it. In this series, we try to replicate what CLM-8B did: rebuild its training from the settings stored in its public checkpoints, train our own model, and compare the two. The code is in my <a href="https://github.com/MKDYasserH/system-one-model" rel="external nofollow noopener" target="_blank">system-one-model repository</a>. If you prefer to watch before you read, Vizuara AI has a great <a href="https://www.youtube.com/watch?v=vEpkc44bHVQ&amp;t=5549s" rel="external nofollow noopener" target="_blank">video on building a Jev-like decision model</a>.</p> <h1 id="the-architecture-two-towers">The architecture: two towers</h1> <p>The model has three parts. Here is the whole thing:</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>State   -&gt; Qwen3-8B (frozen) -&gt; (4096,) -&gt; State head  (9.44M) -&gt; (512,)
+Option  -&gt; Qwen3-8B (frozen) -&gt; (4096,) -&gt; Action head (9.44M) -&gt; (512,)
+Score   =  s · cos(state embedding, option embedding)
+</code></pre></div></div> <p>Every piece of text, state or option, first goes through Qwen3-8B<sup id="fnref:qwen3"><a href="#fn:qwen3" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>, an open language model with 8 billion parameters. We keep its weights fixed and never train it. From its output we keep a single vector of dimension 4096, written \(\mathbb{R}^{4096}\) in maths or shape (4096,) in code, which is simply a list of 4096 numbers that summarizes the text. We call this vector the text’s <strong>embedding</strong>. Part 2 explains why we keep the language model frozen, and how one embedding can summarize a whole text.</p> <p>On top of the language model sit two small networks that we do train. The <strong>state head</strong> maps a state embedding to a new vector of dimension 512, shape (512,), and the <strong>action head</strong> does the same for options. Each head is a small network, 4096 → 1536 → 1536 → 512, with about 9.44 million parameters. Together, the two heads have about 18.9 million parameters, roughly 0.2% of the language model they sit on, and they are the only part of the model that learns anything.</p> <p>The score of an option is then how well its 512-dimensional vector lines up with the state’s, multiplied by a learned number \(s\).</p> <p>This design is called a <strong>two-tower model</strong>, or bi-encoder, because states and options go up two separate towers that only meet at the very end, in the score. It is the same design used by CLIP<sup id="fnref:radford2021"><a href="#fn:radford2021" class="footnote" rel="footnote" role="doc-noteref">4</a></sup> to match images with captions, and by dense retrieval systems<sup id="fnref:karpukhin2020"><a href="#fn:karpukhin2020" class="footnote" rel="footnote" role="doc-noteref">5</a></sup> to match questions with documents.</p> <h1 id="the-maths-of-a-score">The maths of a score</h1> <p>Let’s make “how well two vectors line up” precise.</p> <h2 id="cosine-similarity">Cosine similarity</h2> <p>The heads turn a state into a vector \(\mathbf{u}\) and an option into a vector \(\mathbf{v}\), both of dimension 512. The <strong>cosine similarity</strong> of the two is</p> \[\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\lVert \mathbf{u} \rVert \, \lVert \mathbf{v} \rVert} = \frac{\sum_{k=1}^{512} u_k v_k}{\sqrt{\sum_k u_k^2}\,\sqrt{\sum_k v_k^2}}\] <p>where \(\theta\) is the angle between the two vectors. When the vectors point the same way, \(\theta = 0\) and \(\cos\theta = 1\), a perfect match. When they are at a right angle, the cosine is 0 and the two are unrelated, and when they point in opposite directions it is -1.</p> <p>Notice what the cosine ignores: the <em>length</em> of the vectors. Only their direction matters. So we can drop the lengths from the start by dividing every vector by its length, \(\hat{\mathbf{u}} = \mathbf{u} / \lVert \mathbf{u} \rVert\). Every vector then has length 1 and lies on the surface of a sphere (a circle, in the two-dimensional pictures of this post), and the cosine becomes a plain dot product:</p> \[\cos\theta = \hat{\mathbf{u}} \cdot \hat{\mathbf{v}}\] <p>This matters in practice: a dot product of two 512-dimensional vectors is 512 multiplications and 511 additions, which a GPU does for thousands of pairs at once.</p> <h2 id="from-scores-to-probabilities">From scores to probabilities</h2> <p>A cosine is not yet a probability. To compare the \(n\) options of one state, we turn their cosines into a probability distribution with a <strong>softmax</strong>:</p> \[p_i = \frac{e^{\,s \cos\theta_i}}{\sum_{j=1}^{n} e^{\,s \cos\theta_j}}\] <p>The exponential makes every value positive, and dividing by the sum makes the probabilities add up to 1.</p> <p>The number \(s\) is the <strong>scale</strong>, also called the inverse temperature (\(s = 1/\tau\)). Cosines live between -1 and 1, so without it the softmax could never be confident: even a perfect match against an unrelated option would only give \(e^{1}/(e^{1} + e^{0}) \approx 0.73\). Multiplying by \(s\) stretches the differences. The model <em>learns</em> \(s\) during training, capped at 100. Part 3 shows how the temperature shapes training.</p> <h2 id="a-worked-example">A worked example</h2> <p>Take the question in the animation, <em>“Which planet is closest to the Sun?”</em>, with three options. Suppose the trained heads give these cosines with the question:</p> <table> <thead> <tr> <th>Option</th> <th>\(\cos\theta\)</th> <th>\(s \cos\theta\) with \(s = 20\)</th> <th>Probability</th> </tr> </thead> <tbody> <tr> <td>Mercury</td> <td>0.92</td> <td>18.4</td> <td>0.80</td> </tr> <tr> <td>Venus</td> <td>0.85</td> <td>17.0</td> <td>0.20</td> </tr> <tr> <td>Mars</td> <td>0.20</td> <td>4.0</td> <td>0.00</td> </tr> </tbody> </table> <p>The probability of Mercury is</p> \[p_{\text{Mercury}} = \frac{e^{18.4}}{e^{18.4} + e^{17.0} + e^{4.0}} = \frac{1}{1 + e^{-1.4} + e^{-14.4}} \approx 0.80\] <p>Two things stand out. First, Mars is out of the picture: its cosine is far below the others, and the exponential crushes it to almost zero. Second, Mercury and Venus are close (0.92 against 0.85), so the probability is split 0.80 / 0.20: the model is fairly sure, not certain. The probability is not just a choice, it is a measure of confidence.</p> <p>I used \(s = 20\) to keep the numbers readable. The trained model learns a scale of around 90, which makes it much more decisive: with the same cosines and \(s = 90\), Mercury would get 0.998.</p> <h1 id="why-two-towers-make-it-fast">Why two towers make it fast</h1> <p>There are two other ways to make a language model choose between options, and comparing them shows where the speed comes from.</p> <p>The first is to <strong>generate the answer</strong>. You ask the model “Which planet is closest to the Sun?” and let it write. The model reads the question, then produces the answer one token at a time, and each token is another pass through all 8 billion parameters. If it reasons first (“Let’s think…”), that can be hundreds of passes, and you still have to read its text and match it to an option at the end.</p> <p>The second is to <strong>score each option together with the state</strong>. You feed the model “question + Mercury”, then “question + Venus”, then “question + Mars”, and compare how likely it finds each. This is accurate, because the model sees the question and the option together, but it costs one full pass per option, over the whole state every time. This design is called a <strong>cross-encoder</strong><sup id="fnref:reimers2019"><a href="#fn:reimers2019" class="footnote" rel="footnote" role="doc-noteref">6</a></sup>.</p> <p>A two-tower model avoids both costs. The state goes through the language model <strong>once</strong>. The options go through it once too, and since their embeddings do not depend on the state, any option that comes back (a fixed set of moves, a list of tools, a catalogue of answers) can be embedded once and reused. What is left per decision is the state’s pass, two tiny heads, and \(n\) dot products. There is no decoding at all. In the T-Rex game that ships with the CLM code, a full decision took about 17 milliseconds (median) on a single L40S GPU in our runs, fast enough to play in real time.</p> <p>The price of this speed is that the state and the options never see each other inside the language model. Everything the model knows about the match has to fit in two independent vectors. That is a real limitation, and it is the reason the training in parts 3 and 4 matters so much: the heads have to learn to put states and their right options close together on the sphere.</p> <h1 id="what-it-can-and-cant-do">What it can and can’t do</h1> <p>A decision model picks among given options quickly and tells you how confident it is. It is also cheap to reuse: the language model is shared across tasks, and adapting to a new one means training, or fine-tuning, only the small heads.</p> <p>What it can’t do is come up with options of its own, follow a multi-step chain of reasoning, or know more than what the frozen language model put into its embeddings.</p> <p>This is why decision models are best seen as a partner to reasoning models, not a replacement. In Kahneman’s picture, System 1 handles the routine and System 2 steps in when something feels off. One natural design does the same: the decision model makes every routine choice, and when its probabilities are spread out, the decision goes to a slower model that thinks it through.</p> <h1 id="implementation">Implementation</h1> <p>Here is the head, as it is defined in the <a href="https://github.com/MKDYasserH/system-one-model" rel="external nofollow noopener" target="_blank">repository</a>. It is a small multi-layer perceptron: a linear layer to 1536 dimensions, a second linear layer followed by layer normalization, and a final projection to 512, with GELU activations in between.</p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ProjectionHead</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sh">"""</span><span class="s">input_dim -&gt; width -&gt; width (LayerNorm) -&gt; projection_dim, with GELU in between.</span><span class="sh">"""</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">:</span> <span class="n">HeadDims</span><span class="p">):</span>
+        <span class="nf">super</span><span class="p">().</span><span class="nf">__init__</span><span class="p">()</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">inp</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">Linear</span><span class="p">(</span><span class="n">dims</span><span class="p">.</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">dims</span><span class="p">.</span><span class="n">width</span><span class="p">)</span>               <span class="c1"># 4096 -&gt; 1536
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="p">.</span><span class="nc">Linear</span><span class="p">(</span><span class="n">dims</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">dims</span><span class="p">.</span><span class="n">width</span><span class="p">)])</span>  <span class="c1"># 1536 -&gt; 1536
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">norms</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="p">.</span><span class="nc">LayerNorm</span><span class="p">(</span><span class="n">dims</span><span class="p">.</span><span class="n">width</span><span class="p">)])</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">out</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">Linear</span><span class="p">(</span><span class="n">dims</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">dims</span><span class="p">.</span><span class="n">projection_dim</span><span class="p">)</span>          <span class="c1"># 1536 -&gt; 512
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">GELU</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">activation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="nf">inp</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">activation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">norms</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">self</span><span class="p">.</span><span class="n">hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">out</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></div> <p>The parameters add up as promised: \(4096 \times 1536 + 1536\) for the first layer, \(1536 \times 1536 + 1536\) for the second, \(2 \times 1536\) for the layer norm and \(1536 \times 512 + 512\) for the projection, which is 9,443,840, or 9.44M.</p> <p>The model holds one head for states, one for actions, and the learned scale, stored as a logarithm so that it always stays positive. Choosing between options then takes four lines:</p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@torch.no_grad</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">choose</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">ContrastiveHeads</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sh">"""</span><span class="s">state: (1, 4096) embedding. options: (n, 4096) embeddings. Returns one probability per option.</span><span class="sh">"""</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">embed_states</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>              <span class="c1"># (1, 512), length 1
+</span>    <span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">embed_actions</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>           <span class="c1"># (n, 512), length 1
+</span>    <span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">logit_scale</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span> <span class="o">@</span> <span class="n">v</span><span class="p">.</span><span class="n">T</span>     <span class="c1"># s · cos θ for every option
+</span>    <span class="k">return</span> <span class="n">scores</span><span class="p">.</span><span class="nf">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">embed_states</code> and <code class="language-plaintext highlighter-rouge">embed_actions</code> run a head and divide by the length, so <code class="language-plaintext highlighter-rouge">u @ v.T</code> is exactly the cosine from the maths above, and <code class="language-plaintext highlighter-rouge">logit_scale()</code> is \(s\).</p> <h1 id="whats-next">What’s next</h1> <p>That’s the whole model: a frozen language model, two small heads, a cosine and a softmax. The interesting part is everything we have not explained yet: how a frozen model can be useful at all, and how two small heads learn to place a question and its answer next to each other on the sphere. Here is the plan for the series:</p> <ol> <li> <strong>What is a decision model?</strong> This post.</li> <li> <strong>Fine-tuning a frozen LLM: why we train heads instead of LoRA.</strong> Why we never touch the 8 billion parameters, and how a frozen model turns text into an embedding.</li> <li> <strong>Contrastive learning.</strong> The loss that trains the heads: InfoNCE, the temperature, and hard negatives.</li> <li> <strong>Training in three stages.</strong> The data, how it was processed, and the pre-, mid- and post-training recipes.</li> <li> <strong>Does it work?</strong> A verifier for coding agents, the results, and what we learned.</li> </ol> <h1 id="references">References</h1> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:kahneman2011"> <p>D. Kahneman. <em>Thinking, Fast and Slow.</em> Farrar, Straus and Giroux, 2011. <a href="#fnref:kahneman2011" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:clm2026"> <p>J. Kwok, H. Kang, T. Suresh, J. Saad-Falcon, M. Pavone, C. Ré and A. Mirhoseini. <em>CLM-8B</em> (project page). <a href="https://contrastive-lm.notion.site" rel="external nofollow noopener" target="_blank">contrastive-lm.notion.site</a>. Code: <a href="https://github.com/Contrastive-LM/CLM" rel="external nofollow noopener" target="_blank">github.com/Contrastive-LM/CLM</a>. <a href="#fnref:clm2026" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:qwen3"> <p>Qwen Team. <em>Qwen3 Technical Report.</em> <a href="https://arxiv.org/abs/2505.09388" rel="external nofollow noopener" target="_blank">arXiv:2505.09388</a>, 2025. <a href="#fnref:qwen3" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:radford2021"> <p>A. Radford et al. <em>Learning transferable visual models from natural language supervision.</em> International Conference on Machine Learning, 2021. <a href="https://arxiv.org/abs/2103.00020" rel="external nofollow noopener" target="_blank">arXiv:2103.00020</a> <a href="#fnref:radford2021" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:karpukhin2020"> <p>V. Karpukhin et al. <em>Dense passage retrieval for open-domain question answering.</em> Empirical Methods in Natural Language Processing, 2020. <a href="https://arxiv.org/abs/2004.04906" rel="external nofollow noopener" target="_blank">arXiv:2004.04906</a> <a href="#fnref:karpukhin2020" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:reimers2019"> <p>N. Reimers and I. Gurevych. <em>Sentence-BERT: Sentence embeddings using Siamese BERT-networks.</em> Empirical Methods in Natural Language Processing, 2019. <a href="https://arxiv.org/abs/1908.10084" rel="external nofollow noopener" target="_blank">arXiv:1908.10084</a> <a href="#fnref:reimers2019" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </div> <aside class="article-toc" aria-label="On this page"> <div class="article-toc__inner" hidden> <p class="article-toc__label">on this page</p> <nav id="article-toc"></nav> </div> </aside> </div> <nav class="article-pager" aria-label="Series navigation"> <a class="article-pager__next" href="/blog/2026/fine-tuning-a-frozen-llm/"> <span class="article-pager__label">part 02 →</span> <span class="article-pager__title">Fine-Tuning a Frozen LLM: Why We Train Heads Instead of LoRA</span> </a> </nav> <section class="article-comments" id="comments"> <div class="site-section__head"> <span class="site-index">//</span> <h2>Discussion</h2> <p>Questions, corrections and ideas are welcome. Comments use GitHub Discussions, so you'll need a GitHub account.</p> </div> <div id="giscus_thread" style="max-width: 1200px; margin: 0 auto;"> <br> <script>
+    (function setupGiscus() {
+      function determineGiscusTheme() {
+        var theme = localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme") || "system";
+if (theme === "dark") return "transparent_dark";
+if (theme === "light") return "light";
+var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+return prefersDark ? "transparent_dark" : "light";
+
+      }
+
+      var giscusTheme = determineGiscusTheme();
+      var attrs = {
+        src: "https://giscus.app/client.js",
+        "data-repo": "MKDYasserH/mkdyasserh.github.io",
+        "data-repo-id": "R_kgDOKtOPJw",
+        "data-category": "Announcements",
+        "data-category-id": "DIC_kwDOKtOPJ84DJ7CC",
+        "data-mapping": "pathname",
+        "data-strict": "1",
+        "data-reactions-enabled": "1",
+        "data-emit-metadata": "0",
+        "data-input-position": "bottom",
+        "data-theme": giscusTheme,
+        "data-lang": "en",
+        crossorigin: "anonymous",
+        async: true
+      };
+
+      var giscusScript = document.createElement("script");
+      Object.entries(attrs).forEach(function(entry) { giscusScript.setAttribute(entry[0], entry[1]); });
+      var host = document.getElementById("giscus_thread");
+      if (host) host.appendChild(giscusScript);
+    })();
+  </script> <noscript> Please enable JavaScript to view the <a href="http://giscus.app/?ref_noscript" rel="external nofollow noopener" target="_blank">comments powered by giscus.</a> </noscript> </div> </section> <section class="article-related"> <div class="site-section__head"> <span class="site-index">→</span> <h2>Keep reading</h2> </div> <ul class="post-rows"> <li class="post-row" data-filter-item data-type="series" data-tags="diffusion|unet|classifier-free guidance|clip" data-year="2025" data-date="1736683200" data-search="diffusion, classifier-free guidance, unet and clip putting it all together: diffusion models, classifier-free guidance, the unet architecture, and clip's role in stable diffusion. stable diffusion from scratch diffusion unet classifier-free guidance clip" data-kind="article"> <a href="/blog/2025/stable-diffusion/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Diffusion, Classifier-Free Guidance, UNet and CLIP</h3> <p>Putting it all together: diffusion models, classifier-free guidance, the UNet architecture, and CLIP's role in Stable Diffusion.</p> <span class="post-row__tags"> <span class="site-chip">20 min</span> <span class="site-chip">#diffusion</span><span class="site-chip">#unet</span><span class="site-chip">#classifier-free guidance</span><span class="site-chip">#clip</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> <li class="post-row" data-filter-item data-type="series" data-tags="autoencoders|vae" data-year="2025" data-date="1736679600" data-search="variational auto-encoders why do we need an auto-encoder for stable diffusion? from plain autoencoders to the reparameterization trick. stable diffusion from scratch autoencoders vae" data-kind="article"> <a href="/blog/2025/vae/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Variational Auto-Encoders</h3> <p>Why do we need an auto-encoder for Stable Diffusion? From plain autoencoders to the reparameterization trick.</p> <span class="post-row__tags"> <span class="site-chip">15 min</span> <span class="site-chip">#autoencoders</span><span class="site-chip">#vae</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> <li class="post-row" data-filter-item data-type="series" data-tags="attention|transformers" data-year="2025" data-date="1736676000" data-search="attention mechanisms explained understand the role of the attention mechanism in the architecture of stable diffusion models. stable diffusion from scratch attention transformers" data-kind="article"> <a href="/blog/2025/attention/"> <span class="post-row__date">Jan 12, 2025</span> <span> <h3>Attention Mechanisms Explained</h3> <p>Understand the role of the attention mechanism in the architecture of Stable Diffusion models.</p> <span class="post-row__tags"> <span class="site-chip">17 min</span> <span class="site-chip">#attention</span><span class="site-chip">#transformers</span> </span> </span> <span class="post-row__arrow" aria-hidden="true">→</span> </a> </li> </ul> </section> </article> </div> <footer class="site-footer" role="contentinfo"> <div class="container"> <p class="site-eyebrow">have an idea, a question, or a role in mind?</p> <a class="site-footer__big" href="/contact/"> Let's talk<span class="dot">.</span> <span class="site-footer__arrow" aria-hidden="true">→</span> </a> <div class="site-footer__row"> <span class="mono">© 2026 Yasser Khalafaoui</span> <div class="site-social"> <a href="https://github.com/MKDYasserH" title="Github username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-github"></i></a> <a href="https://www.linkedin.com/in/yasser-khalafaoui" title="Linkedin username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-linkedin"></i></a> <a href="https://twitter.com/YasserMoui" title="X username" rel="external nofollow noopener" target="_blank"><i class="fa-brands fa-x-twitter"></i></a> <a href="/feed.xml" title="Rss icon"><i class="fa-solid fa-square-rss"></i></a> </div> <span class="mono">while (curious) { learn(); build(); share(); } </span> </div> </div> </footer> <script defer src="/assets/js/site.js?v=865582021d765818ccacfbed58f8f128"></script> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJB042V4LQ"></script> <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-QJB042V4LQ");
+</script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-blog",
+          title: "blog",
+          description: "Practical AI, explained three ways: the intuition, the understanding behind it, and an implementation you can run. Multi-part series plus standalone articles.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "nav-contact",
+          title: "contact",
+          description: "Get in touch about research collaborations, speaking, consulting, or anything AI.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/contact/";
+          },
+        },{id: "post-does-it-work-a-verifier-for-coding-agents-the-results-and-what-we-learned",
+        
+          title: "Does It Work? A Verifier for Coding Agents, the Results, and What We...",
+        
+        description: "Our decision model against the released CLM-8B: tricky questions, choosing between a coding agent&#39;s attempts, and a game played in real time. And the lessons, including the ones the benchmarks taught us about themselves.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/does-it-work/";
+          
+        },
+      },{id: "post-training-a-decision-model-the-data-and-pre-mid-and-post-training",
+        
+          title: "Training a Decision Model: The Data, and Pre-, Mid- and Post-Training",
+        
+        description: "Where the training pairs come from, how a terabyte of vectors is fed to one GPU, the three training stages, and the general post-training recipe that worked best: terminal steps, agent environments, Q&amp;A replay and answer preferences with critiques.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/training-in-three-stages/";
+          
+        },
+      },{id: "post-contrastive-learning-infonce-temperature-and-hard-negatives",
+        
+          title: "Contrastive Learning: InfoNCE, Temperature and Hard Negatives",
+        
+        description: "How two small heads learn to put a question next to its answer, using nothing but matching pairs: the in-batch similarity matrix, the InfoNCE loss, the temperature, and the hard negatives that make the model sharp.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/contrastive-learning/";
+          
+        },
+      },{id: "post-fine-tuning-a-frozen-llm-why-we-train-heads-instead-of-lora",
+        
+          title: "Fine-Tuning a Frozen LLM: Why We Train Heads Instead of LoRA",
+        
+        description: "Our decision model never changes a single weight of its 8-billion-parameter language model. Here is why training two small heads on frozen embeddings suits this job better than LoRA, and how a frozen model turns text into a vector.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/fine-tuning-a-frozen-llm/";
+          
+        },
+      },{id: "post-what-is-a-decision-model-system-one",
+        
+          title: "What Is a Decision Model (System One)?",
+        
+        description: "Language models that think out loud are slow. A decision model skips the writing: give it a situation and a list of options, and it returns a probability for each one in a single pass.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/what-is-a-decision-model/";
+          
+        },
+      },{id: "post-diffusion-classifier-free-guidance-unet-and-clip",
+        
+          title: "Diffusion, Classifier-Free Guidance, UNet and CLIP",
+        
+        description: "Putting it all together: diffusion models, classifier-free guidance, the UNet architecture, and CLIP&#39;s role in Stable Diffusion.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/stable-diffusion/";
+          
+        },
+      },{id: "post-variational-auto-encoders",
+        
+          title: "Variational Auto-Encoders",
+        
+        description: "Why do we need an auto-encoder for Stable Diffusion? From plain autoencoders to the reparameterization trick.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/vae/";
+          
+        },
+      },{id: "post-attention-mechanisms-explained",
+        
+          title: "Attention Mechanisms Explained",
+        
+        description: "Understand the role of the attention mechanism in the architecture of Stable Diffusion models.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/attention/";
+          
+        },
+      },{id: "post-convolution-layers-explained",
+        
+          title: "Convolution Layers Explained",
+        
+        description: "Understand the role of convolutional layers in the architecture of Stable Diffusion models.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/convolution/";
+          
+        },
+      },{id: "post-introduction-and-prerequisites",
+        
+          title: "Introduction and Prerequisites",
+        
+        description: "A warm-up: why Stable Diffusion is worth taking apart, what the series covers, and how to follow along.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/intro/";
+          
+        },
+      },{id: "projects-mentorai",
+          title: 'MentorAI',
+          description: "AI Mentor for High School Students",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_project/";
+            },},{id: "projects-multi-modal-emotion-recognition",
+          title: 'Multi-modal Emotion Recognition',
+          description: "Recognition of human emotions through multiple modalities",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_project/";
+            },},{id: "projects-news-aggregator",
+          title: 'News Aggregator',
+          description: "Multi-source news summarization",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_project/";
+            },},{id: "series-decision-models-system-one-from-scratch",
+          title: 'Decision Models (System One) from Scratch',
+          description: "A fast, intuitive model that scores options instead of writing text. Frozen Qwen3-8B embeddings, two small heads, contrastive learning and a three-stage training recipe, explained with the maths and rebuilt end to end.",
+          section: "Series",handler: () => {
+              window.location.href = "/blog/series/decision-models/";
+            },},{id: "series-stable-diffusion-from-scratch",
+          title: 'Stable Diffusion from Scratch',
+          description: "Convolutions, attention, VAEs, diffusion, UNet and CLIP, explained with the maths and implemented in TensorFlow. Every part builds on the one before it.",
+          section: "Series",handler: () => {
+              window.location.href = "/blog/series/stable-diffusion/";
+            },},{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/MKDYasserH", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/yasser-khalafaoui", "_blank");
+        },
+      },{
+        id: 'social-x',
+        title: 'X',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://twitter.com/YasserMoui", "_blank");
+        },
+      },{
+        id: 'social-rss',
+        title: 'RSS Feed',
+        section: 'Socials',
+        handler: () => {
+          window.open("/feed.xml", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>
